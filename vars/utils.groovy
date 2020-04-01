@@ -27,7 +27,7 @@ def checkoutGit(String gitUrl) {
  *     cleanupDocker()
  * </code>
  */
-def cleanupDocker(int attempts, int timeout = 30, String timeoutUnit = 'SECONDS') {
+def cleanupDocker(int attempts = 3, int timeout = 30, String timeoutUnit = 'SECONDS') {
     retry("${attempts}") {
         try {
             timeout(time: "${timeout}", unit: "${timeoutUnit}") {
@@ -51,7 +51,7 @@ def cleanupDocker(int attempts, int timeout = 30, String timeoutUnit = 'SECONDS'
  *     cleanupWorkspace()
  * </code>
  */
-def cleanupWorkspace(int attempts, int timeout = 30, String timeoutUnit = 'SECONDS') {
+def cleanupWorkspace(int attempts = 3, int timeout = 30, String timeoutUnit = 'SECONDS') {
     retry("${attempts}") {
         try {
             timeout(time: "${timeout}", unit: "${timeoutUnit}") {
@@ -80,18 +80,5 @@ def sendFailureEmail(String failureEmailRecipient) {
         )
     }else{
         echo 'Failure email recipient not specified. Email will not be sent.'
-    }
-}
-
-/**
- * Usage:
- * <code>
- *     defaultPollSCM()
- * </code>
- */
-def defaultPollSCM() {
-    triggers{
-        // Once in every 2 hours slot between 0900 and 1600 every Monday - Friday
-        pollSCM('H H(8-16)/2 * * 1-5')
     }
 }
