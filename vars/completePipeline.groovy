@@ -46,7 +46,7 @@ def call(Map config=[:]) {
             string(name: 'MAIN_CLASS', defaultValue: "${config.mainClass}",
                     description: 'Java main class')
             string(name: 'SONAR_BASE_URL',
-                    defaultValue: "${config.sonarBaseUrl ? config.sonarBaseUrl : '3.19.158.114'}",
+                    defaultValue: "${config.sonarBaseUrl ? config.sonarBaseUrl : 'http://3.19.158.114'}",
                     description: '<base_url>:<port> = sonar.host.url')
             string(name: 'SONAR_PORT', defaultValue: '9000',
                     description: 'Port for Sonarqube server')
