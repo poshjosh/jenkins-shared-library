@@ -3,11 +3,7 @@
  * <p>https://github.com/poshjosh</p>
  * Usage:
  * <code>
- *     options(timeout : 30, timeoutUnit : 'MINUTES', numberOfBuildsToKeep : 5)
- * </code>
- * <p>OR</p>
- * <code>
- *     options()
+ *     checkoutGit(gitUrl : 'link_to_your_git_repo_here')
  * </code>
  */
 def call(String gitUrl) {
