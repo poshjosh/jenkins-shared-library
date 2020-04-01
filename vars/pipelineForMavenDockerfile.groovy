@@ -94,7 +94,7 @@ def call(Map config=[:]) {
                     echo " = = = = = = = CLEAN & INSTALL = = = = = = = "
                     script{
                         docker.image("${IMAGE_NAME}").inside("${VOLUME_BINDINGS}"){
-                            sh 'mvn ${MAVEN_ARGS} clean:clean install:install'
+                            sh "mvn ${MAVEN_ARGS} clean:clean install:install"
                        }
                     }
                 }
