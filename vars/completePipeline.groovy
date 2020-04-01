@@ -131,7 +131,7 @@ def call(Map config=[:]) {
                         }
                     }
                     stage('Quality Assurance') {
-                        parallel {
+                        stages {
 
                             integrationTests("${MAVEN_ARGS}")
 
