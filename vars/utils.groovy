@@ -1,5 +1,10 @@
 #!/usr/bin/env groovy
 
+@groovy.transform.Field
+def defaultConfig = [
+    orgName : 'poshjosh',
+    baseUrl : 'http://3.19.158.114']
+
 /**
  * Usage:
  * <code>

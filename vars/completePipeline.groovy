@@ -33,9 +33,9 @@ def call(Map config=[:]) {
                     description: 'Name of the organization. (Docker Hub/GitHub)')
             string(name: 'MAVEN_ARGS', defaultValue: '-B',
                     description: 'Maven arguments')
-            string(name: 'APP_BASE_URL', defaultValue: 'http://localhost',
+            string(name: 'APP_BASE_URL', defaultValue: "${utils.defaultConfig.baseUrl}",
                     description: 'Server  protocol://host, without the port')
-            string(name: 'APP_PORT', defaultValue: "${config.appPort}", description: "'App server port'")
+            string(name: 'APP_PORT', defaultValue: "${config.appPort}", description: 'App server port')
             string(name: 'APP_CONTEXT', defaultValue: '/',
                     description: 'App server context path. Must begin with a forward slash / ')
             string(name: 'JAVA_OPTS',
@@ -46,7 +46,7 @@ def call(Map config=[:]) {
             string(name: 'MAIN_CLASS', defaultValue: "${config.mainClass}",
                     description: 'Java main class')
             string(name: 'SONAR_BASE_URL',
-                    defaultValue: "${config.sonarBaseUrl ? config.sonarBaseUrl : 'http://3.19.158.114'}",
+                    defaultValue: "${config.sonarBaseUrl ? config.sonarBaseUrl : utils.defaultConfig.baseUrl}",
                     description: '<base_url>:<port> = sonar.host.url')
             string(name: 'SONAR_PORT', defaultValue: '9000',
                     description: 'Port for Sonarqube server')
