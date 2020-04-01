@@ -1,5 +1,5 @@
 #!/usr/bin/env groovy
-@Library(['checkoutGit', 'cleanupDocker', 'cleanupWorkspace', 'options', 'sendFailureEmail', 'triggers']) _
+@Library('utils') _
 /**
  * <p>https://github.com/poshjosh</p>
  * Usage:
@@ -32,11 +32,11 @@ def call(Map config=[:]) {
             VOLUME_BINDINGS = '-v /home/.m2:/root/.m2'
         }
 
-        options(timeout : "${params.TIMEOUT}",
+        utils.options timeout : "${params.TIMEOUT}",
             timeoutUnit : 'MINUTES',
-            numberOfBuildsToKeep : 5)
+            numberOfBuildsToKeep : 5
 
-        triggers()
+        utils.triggers
 
         stages {
             stage('Checkout SCM') {
@@ -49,7 +49,7 @@ def call(Map config=[:]) {
                               echo '- - - - - - - Done Printing Environment - - - - - - -'
                           }
 
-                          checkoutGit("${config.gitUrl}")
+                          utils.checkoutGit "${config.gitUrl}"
                     }
                 }
             }
@@ -96,15 +96,15 @@ def call(Map config=[:]) {
             always {
                 script{
 
-                    cleanupWorkspace(attempts : 3, timeout : 60, timeoutUnit : 'SECONDS')
+                    utils.cleanupWorkspace attempts : 3, timeout : 60, timeoutUnit : 'SECONDS'
 
-                    cleanupDocker(attempts : 3, timeout : 60, timeoutUnit : 'SECONDS')
+                    utils.cleanupDocker attempts : 3, timeout : 60, timeoutUnit : 'SECONDS'
                 }
             }
             failure {
                 script{
 
-                    sendFailureEmail(failureEmailRecipient : "${FAILURE_EMAIL_RECIPIENT}")
+                    utils.sendFailureEmail "${FAILURE_EMAIL_RECIPIENT}"
                 }
             }
         }
