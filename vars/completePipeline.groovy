@@ -31,7 +31,7 @@ def call(Map config=[:]) {
                     description: 'Maven arguments')
             string(name: 'APP_BASE_URL', defaultValue: 'http://localhost',
                     description: 'Server protocol://host, without the port')
-            string(name: 'APP_PORT', defaultValue: '', description: 'App server port')
+            string(name: 'APP_PORT', defaultValue: "${appPort}", description: "'App server port'")
             string(name: 'APP_CONTEXT', defaultValue: '/',
                     description: 'App server context path. Must begin with a forward slash / ')
             string(name: 'JAVA_OPTS',
@@ -39,9 +39,9 @@ def call(Map config=[:]) {
                     description: 'Java environment variables')
             string(name: 'CMD_LINE_ARGS', defaultValue: '',
                     description: 'Command line arguments')
-            string(name: 'MAIN_CLASS', defaultValue: '',
+            string(name: 'MAIN_CLASS', defaultValue: "${mainClass}",
                     description: 'Java main class')
-            string(name: 'SONAR_BASE_URL', defaultValue: '',
+            string(name: 'SONAR_BASE_URL', defaultValue: "${sonarBaseUrl}",
                     description: '<base_url>:<port> = sonar.host.url')
             string(name: 'SONAR_PORT', defaultValue: '9000',
                     description: 'Port for Sonarqube server')
