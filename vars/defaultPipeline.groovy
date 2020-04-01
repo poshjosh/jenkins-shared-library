@@ -2,7 +2,7 @@
 /**
  * https://github.com/poshjosh
  */
-def call(Map config=[:], Closure body) {
+def call(Map config=[:]) {
     pipeline {
 
         agent any
