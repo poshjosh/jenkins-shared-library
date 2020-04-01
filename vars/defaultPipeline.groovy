@@ -1,6 +1,10 @@
 #!/usr/bin/env groovy
 /**
- * https://github.com/poshjosh
+ * <p>https://github.com/poshjosh</p>
+ * Usage:
+ * <code>
+ *     defaultPipeline(gitUrl : 'link_to_your_git_repo_here')
+ * </code>
  */
 def call(Map config=[:]) {
     pipeline {
@@ -8,19 +12,8 @@ def call(Map config=[:]) {
         agent any
 
         /**
-         * parameters directive provides a list of parameters which a user should
-         * provide when triggering the Pipeline some of the valid parameter types
-         * are booleanParam, choice, file, text, password, run, or string.
-         * @bug @issue #001
-         * Only one java option supported. (e.g '-XX:+TieredCompilation')
-         * When more than one specified, encountered error:
-         * <code>
-         * unknown shorthand flag: 'X' in -XX:TieredStopAtLevel=1
-         * --build-arg 'JAVA_OPTS=-XX:+TieredCompilation' '-XX:TieredStopAtLevel=1'
-         * -XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap
-         * </code>
-         * From the above the multiplie java opts where separated by jenkins
-         * Tried using single, double and then triple quotes, the error still occurred
+         * At a minimum, provide the MAIN_CLASS and where applicable APP_PORT
+         * You may also need to specify SONAR_BASE_URL if not <tt>localhost</tt>
          */
         parameters {
             string(name: 'ORG_NAME', defaultValue: 'poshjosh',
@@ -41,7 +34,7 @@ def call(Map config=[:]) {
                     description: 'Java main class')
             string(name: 'SONAR_BASE_URL', defaultValue: 'http://localhost',
                     description: '<base_url>:<port> = sonar.host.url')
-            string(name: 'SONAR_PORT', defaultValue: '',
+            string(name: 'SONAR_PORT', defaultValue: '9000',
                     description: 'Port for Sonarqube server')
             string(name: 'TIMEOUT', defaultValue: '30',
                     description: 'Max time that could be spent in MINUTES')
