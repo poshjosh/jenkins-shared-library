@@ -42,8 +42,8 @@ def call(Map config=[:]) {
 
         options {
             timestamps()
-            timeout(time: "${config.timeout}", unit: "${config.timeoutUnit}")
-            buildDiscarder(logRotator(numToKeepStr: '4'))
+            timeout(time: "${params.timeout}", unit: 'MINUTES')
+            buildDiscarder(logRotator(numToKeepStr: '5'))
             skipStagesAfterUnstable()
             disableConcurrentBuilds()
         }
@@ -109,7 +109,7 @@ def call(Map config=[:]) {
         }
         post {
             always {
-            
+
                 cleanup()
             }
             failure {
