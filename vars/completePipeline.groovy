@@ -13,10 +13,11 @@ library(
  * Usage:
  * <code>
  *     completePipeline(
+ *         appEndpoint : '/actuator/health'       // optional
  *         gitUrl : 'link_to_your_git_repo_here', // optional
- *         mainClass : 'com.abc.Main',      // optional
- *         appPort : '9010',                // optional
- *         sonarBaseUrl : '112.111.90.21')  // optional
+ *         mainClass : 'com.abc.Main',            // optional
+ *         appPort : '9010',                      // optional
+ *         sonarBaseUrl : '112.111.90.21')        // optional
  * </code>
  */
 def call(Map config=[:]) {
@@ -36,8 +37,8 @@ def call(Map config=[:]) {
             string(name: 'APP_BASE_URL', defaultValue: "${utils.defaultConfig.baseUrl}",
                     description: 'Server  protocol://host, without the port')
             string(name: 'APP_PORT', defaultValue: "${config.appPort}", description: 'App server port')
-            string(name: 'APP_CONTEXT', defaultValue: '/',
-                    description: 'App server context path. Must begin with a forward slash / ')
+            string(name: 'APP_ENDPOINT', defaultValue: "${config.appEndpoint}",
+                    description: 'Must begin with a forward slash /. Endpoint to append to app host for HTTP requests.')
             string(name: 'JAVA_OPTS',
                     defaultValue: '-XX:TieredStopAtLevel=1',
                     description: 'Java environment variables')
@@ -65,7 +66,7 @@ def call(Map config=[:]) {
             MAVEN_WORKSPACE = ''
             MAVEN_CONTAINER_NAME = "${ARTIFACTID}-container"
             MAVEN_ARGS = "${params.DEBUG == 'Y' ? '-X ' + params.MAVEN_ARGS : params.MAVEN_ARGS}"
-            SERVER_URL = "${(params.APP_BASE_URL && params.APP_PORT) ? (params.APP_BASE_URL + ':' + params.APP_PORT + params.APP_CONTEXT) : ''}"
+            SERVER_URL = "${(params.APP_BASE_URL && params.APP_PORT) ? (params.APP_BASE_URL + ':' + params.APP_PORT + params.END_POINT) : ''}"
             SONAR_URL = "${(params.SONAR_BASE_URL && params.SONAR_PORT) ? (params.SONAR_BASE_URL + ':' + params.SONAR_PORT) : ''}"
             VOLUME_BINDINGS = '-v /home/.m2:/root/.m2'
         }
