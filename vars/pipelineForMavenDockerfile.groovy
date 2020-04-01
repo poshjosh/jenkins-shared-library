@@ -58,8 +58,6 @@ def call(Map config=[:]) {
                               userRemoteConfigs: [[url: "${config.gitUrl}"]]
                           ])
                     }
-                    echo 'Printing host ip'
-                    sh "$(ip -4 addr show docker0 | grep -Po 'inet \K[\d.]+')"
                 }
             }
             stage('Build Image') {
