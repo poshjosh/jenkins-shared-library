@@ -13,9 +13,9 @@ library(
  * Usage:
  * <code>
  *     completePipeline(gitUrl : 'link_to_your_git_repo_here',
- *         mainClass : 'com.abc.Main',
- *         appPort : '9010',
- *         sonarBaseUrl : '112.111.90.21')
+ *         mainClass : 'com.abc.Main',      // optional
+ *         appPort : '9010',                // optional
+ *         sonarBaseUrl : '112.111.90.21')  // optional
  * </code>
  */
 def call(Map config=[:]) {
@@ -34,7 +34,7 @@ def call(Map config=[:]) {
                     description: 'Maven arguments')
             string(name: 'APP_BASE_URL', defaultValue: 'http://localhost',
                     description: 'Server  protocol://host, without the port')
-            string(name: 'APP_PORT', defaultValue: "${appPort}", description: "'App server port'")
+            string(name: 'APP_PORT', defaultValue: "${config.appPort}", description: "'App server port'")
             string(name: 'APP_CONTEXT', defaultValue: '/',
                     description: 'App server context path. Must begin with a forward slash / ')
             string(name: 'JAVA_OPTS',
@@ -42,9 +42,10 @@ def call(Map config=[:]) {
                     description: 'Java environment variables')
             string(name: 'CMD_LINE_ARGS', defaultValue: '',
                     description: 'Command line arguments')
-            string(name: 'MAIN_CLASS', defaultValue: "${mainClass}",
+            string(name: 'MAIN_CLASS', defaultValue: "${config.mainClass}",
                     description: 'Java main class')
-            string(name: 'SONAR_BASE_URL', defaultValue: "${sonarBaseUrl}",
+            string(name: 'SONAR_BASE_URL',
+                    defaultValue: "${config.sonarBaseUrl ? config.sonarBaseUrl : '3.19.158.114'}",
                     description: '<base_url>:<port> = sonar.host.url')
             string(name: 'SONAR_PORT', defaultValue: '9000',
                     description: 'Port for Sonarqube server')
