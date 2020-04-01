@@ -1,7 +1,6 @@
 #!/usr/bin/env groovy
 
 /**
- * <p>https://github.com/poshjosh</p>
  * Usage:
  * <code>
  *     checkoutGit(gitUrl : 'link_to_your_git_repo_here')
@@ -19,7 +18,6 @@ def checkoutGit(String gitUrl) {
 }
 
 /**
- * <p>https://github.com/poshjosh</p>
  * Usage:
  * <code>
  *     cleanupDocker(attempts : 3, timeout : 60, timeoutUnit : 'SECONDS')
@@ -44,7 +42,6 @@ def cleanupDocker(int attempts, int timeout = 30, String timeoutUnit = 'SECONDS'
 }
 
 /**
- * <p>https://github.com/poshjosh</p>
  * Usage:
  * <code>
  *     cleanupWorkspace(attempts : 3, timeout : 60, timeoutUnit : 'SECONDS')
@@ -69,7 +66,6 @@ def cleanupWorkspace(int attempts, int timeout = 30, String timeoutUnit = 'SECON
 }
 
 /**
- * <p>https://github.com/poshjosh</p>
  * Usage:
  * <code>
  *     sendFailureEmail(failureEmailRecipient : 'put_recipient_email_address_here')
@@ -85,4 +81,15 @@ def sendFailureEmail(String failureEmailRecipient) {
     }else{
         echo 'Failure email recipient not specified. Email will not be sent.'
     }
+}
+
+/**
+ * Usage:
+ * <code>
+ *     defaultPollSCM()
+ * </code>
+ */
+def defaultPollSCM() {
+    // Once in every 2 hours slot between 0900 and 1600 every Monday - Friday
+    pollSCM('H H(8-16)/2 * * 1-5')
 }
