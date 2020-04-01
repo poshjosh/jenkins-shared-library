@@ -14,6 +14,10 @@ library(
  * <code>
  *     pipelineForMavenDockerfile(gitUrl : 'link_to_your_git_repo_here')
  * </code>
+ * <p>OR</p>
+ * <code>
+ *     pipelineForMavenDockerfile()
+ * </code>
  */
 def call(Map config=[:]) {
     pipeline {

@@ -12,7 +12,8 @@ library(
  * <p>https://github.com/poshjosh</p>
  * Usage:
  * <code>
- *     completePipeline(gitUrl : 'link_to_your_git_repo_here',
+ *     completePipeline(
+ *         gitUrl : 'link_to_your_git_repo_here', // optional
  *         mainClass : 'com.abc.Main',      // optional
  *         appPort : '9010',                // optional
  *         sonarBaseUrl : '112.111.90.21')  // optional
