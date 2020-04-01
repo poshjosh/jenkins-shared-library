@@ -75,6 +75,14 @@ def call(Map config=[:], Closure body) {
             pollSCM('H H(8-16)/2 * * 1-5')
         }
         stages {
+            stage('Checkout SCM') {
+                steps {
+                    echo "Git URL: ${config.gitUrl}"
+                    script {
+                          checkout([$class: 'GitSCM', branches: [[name: '**']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: "${config.gitUrl}"]]])
+                    }
+                }
+            }
             stage('Maven') {
                 agent {
                     docker {
