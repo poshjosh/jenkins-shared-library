@@ -131,6 +131,7 @@ def call(Map config=[:]) {
                         }
                     }
                     stage('Quality Assurance') {
+                        // parallel {
                         stages {
                             stage('Integration Tests') {
                                 steps {
