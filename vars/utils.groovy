@@ -72,27 +72,6 @@ def cleanupWorkspace(int attempts, int timeout = 30, String timeoutUnit = 'SECON
  * <p>https://github.com/poshjosh</p>
  * Usage:
  * <code>
- *     options(timeout : 30, timeoutUnit : 'MINUTES', numberOfBuildsToKeep : 5)
- * </code>
- * <p>OR</p>
- * <code>
- *     options()
- * </code>
- */
-def options(int timeout = 30, String timeoutUnit = 'MINUTES', numberOfBuildsToKeep = 5) {
-    options {
-        timestamps()
-        timeout(time: "${config.timeout}", unit: "${config.timeoutUnit}")
-        buildDiscarder(logRotator(numToKeepStr: '4'))
-        skipStagesAfterUnstable()
-        disableConcurrentBuilds()
-    }
-}
-
-/**
- * <p>https://github.com/poshjosh</p>
- * Usage:
- * <code>
  *     sendFailureEmail(failureEmailRecipient : 'put_recipient_email_address_here')
  * </code>
  */
@@ -105,19 +84,5 @@ def sendFailureEmail(String failureEmailRecipient) {
         )
     }else{
         echo 'Failure email recipient not specified. Email will not be sent.'
-    }
-}
-
-/**
- * <p>https://github.com/poshjosh</p>
- * Usage:
- * <code>
- *     triggers() // Use default values
- * </code>
- */
-def triggers() {
-    triggers {
-        // Once in every 2 hours slot between 0900 and 1600 every Monday - Friday
-        pollSCM('H H(8-16)/2 * * 1-5')
     }
 }
