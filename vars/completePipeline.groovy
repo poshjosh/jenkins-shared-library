@@ -13,11 +13,10 @@ library(
  * Usage:
  * <code>
  *     completePipeline(
- *         appEndpoint : '/actuator/health'       // optional
- *         gitUrl : 'link_to_your_git_repo_here', // optional
- *         mainClass : 'com.abc.Main',            // optional
  *         appPort : '9010',                      // optional
- *         sonarBaseUrl : '112.111.90.21')        // optional
+ *         appEndpoint : '/actuator/health',      // optional
+ *         mainClass : 'com.abc.Main',            // optional
+ *         gitUrl : 'link_to_your_git_repo_here') // Only if not specified in jenkins app
  * </code>
  */
 def call(Map config=[:]) {
@@ -30,30 +29,36 @@ def call(Map config=[:]) {
          * You may also need to specify SONAR_BASE_URL if not <tt>localhost</tt>
          */
         parameters {
-            string(name: 'ORG_NAME', defaultValue: 'poshjosh',
+            string(name: 'ORG_NAME',
+                    defaultValue: "${config.orgName ? config.orgName : utils.defaultConfig.orgName}",
                     description: 'Name of the organization. (Docker Hub/GitHub)')
-            string(name: 'MAVEN_ARGS', defaultValue: '-B',
+            string(name: 'MAVEN_ARGS',
+                    defaultValue: "${config.mavenArgs ? config.mavenArgs : utils.defaultConfig.mavenArgs}",
                     description: 'Maven arguments')
-            string(name: 'APP_BASE_URL', defaultValue: "${utils.defaultConfig.baseUrl}",
+            string(name: 'APP_BASE_URL',
+                    defaultValue: "${config.appBaseUrl ? config.appBaseUrl : utils.defaultConfig.baseUrl}",
                     description: 'Server  protocol://host, without the port')
-            string(name: 'APP_PORT', defaultValue: "${config.appPort}", description: 'App server port')
+            string(name: 'APP_PORT', defaultValue: "${config.appPort}",
+                    description: 'App server port')
             string(name: 'APP_ENDPOINT', defaultValue: "${config.appEndpoint}",
                     description: 'Must begin with a forward slash /. Endpoint to append to app host for HTTP requests.')
             string(name: 'JAVA_OPTS',
-                    defaultValue: '-XX:TieredStopAtLevel=1',
+                    defaultValue: "${config.javaOpts ? config.javaOpts : utils.defaultConfig.javaOpts}",
                     description: 'Java environment variables')
-            string(name: 'CMD_LINE_ARGS', defaultValue: '',
+            string(name: 'CMD_LINE_ARGS', defaultValue: "${config.cmdLineArgs}",
                     description: 'Command line arguments')
             string(name: 'MAIN_CLASS', defaultValue: "${config.mainClass}",
                     description: 'Java main class')
             string(name: 'SONAR_BASE_URL',
                     defaultValue: "${config.sonarBaseUrl ? config.sonarBaseUrl : utils.defaultConfig.baseUrl}",
                     description: '<base_url>:<port> = sonar.host.url')
-            string(name: 'SONAR_PORT', defaultValue: '9000',
+            string(name: 'SONAR_PORT',
+                    defaultValue: "${config.sonarPort ? config.sonarPort : utils.defaultConfig.sonarPort}",
                     description: 'Port for Sonarqube server')
-            string(name: 'TIMEOUT', defaultValue: '30',
+            string(name: 'TIMEOUT', defaultValue: "${config.timeout ? config.timeout : utils.defaultConfig.timeout}",
                     description: 'Max time that could be spent in MINUTES')
-            string(name: 'FAILURE_EMAIL_RECIPIENT', defaultValue: '',
+            string(name: 'FAILURE_EMAIL_RECIPIENT',
+                    defaultValue: "${config.failureEmailRecipient ? config.failureEmailRecipient : utils.defaultConfig.failureEmailRecipient}",
                     description: 'The email address to send a message to on failure')
             choice(name: 'DEBUG', choices: ['N', 'Y'], description: 'Debug?')
         }
@@ -66,7 +71,7 @@ def call(Map config=[:]) {
             MAVEN_WORKSPACE = ''
             MAVEN_CONTAINER_NAME = "${ARTIFACTID}-container"
             MAVEN_ARGS = "${params.DEBUG == 'Y' ? '-X ' + params.MAVEN_ARGS : params.MAVEN_ARGS}"
-            SERVER_URL = "${(params.APP_BASE_URL && params.APP_PORT) ? (params.APP_BASE_URL + ':' + params.APP_PORT + params.END_POINT) : ''}"
+            SERVER_URL = "${(params.APP_BASE_URL && params.APP_PORT) ? (params.APP_BASE_URL + ':' + params.APP_PORT + params.APP_ENDPOINT) : ''}"
             SONAR_URL = "${(params.SONAR_BASE_URL && params.SONAR_PORT) ? (params.SONAR_BASE_URL + ':' + params.SONAR_PORT) : ''}"
             VOLUME_BINDINGS = '-v /home/.m2:/root/.m2'
         }

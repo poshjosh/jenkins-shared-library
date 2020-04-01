@@ -3,7 +3,12 @@
 @groovy.transform.Field
 def defaultConfig = [
     orgName : 'poshjosh',
-    baseUrl : 'http://3.19.158.114']
+    mavenArgs : '-B',
+    baseUrl : 'http://3.19.158.114',
+    javaOpts : '-XX:TieredStopAtLevel=1',
+    sonarPort : '9000',
+    timeout : '30', // minutes
+    failureEmailRecipient : 'posh.bc@gmail.com'] 
 
 /**
  * Usage:
