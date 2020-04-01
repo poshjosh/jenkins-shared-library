@@ -34,3 +34,30 @@ def sendFailureEmail(String failureEmailRecipient) {
         echo 'Failure email recipient not specified. Email will not be sent.'
     }
 }
+
+/**
+ * Usage:
+ * <code>
+ *     def doIt{
+ *         echo 'Doing it'
+ *     }
+ *     defaultRetry(this&doIt)
+ * </code>
+ * <p>OR</p>
+ * <code>
+ *     defaultRetry()
+ * </code>
+ */
+def defaultRetry(Closure body) {
+    retry(3) {
+        try {
+            timeout(time: 60, unit: 'SECONDS') {
+                body()
+            }
+        } catch (org.jenkinsci.plugins.workflow.steps.FlowInterruptedException e) {
+            // we re-throw as a different error, that would not
+            // cause retry() to fail (workaround for issue JENKINS-51454)
+            error 'Timeout!'
+        }
+    } // retry ends
+}
