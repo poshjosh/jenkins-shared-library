@@ -8,6 +8,24 @@ library(
         ]
     )
 )
+library(
+    identifier: 'options@master',
+    retriever: modernSCM(
+        [
+            $class: 'GitSCMSource',
+            remote: 'https://github.com/poshjosh/jenkins-shared-library.git'
+        ]
+    )
+)
+library(
+    identifier: 'triggers@master',
+    retriever: modernSCM(
+        [
+            $class: 'GitSCMSource',
+            remote: 'https://github.com/poshjosh/jenkins-shared-library.git'
+        ]
+    )
+)
 /**
  * <p>https://github.com/poshjosh</p>
  * Usage:
@@ -40,11 +58,11 @@ def call(Map config=[:]) {
             VOLUME_BINDINGS = '-v /home/.m2:/root/.m2'
         }
 
-        utils.options timeout : "${params.TIMEOUT}",
+        options(timeout : "${params.TIMEOUT}",
             timeoutUnit : 'MINUTES',
-            numberOfBuildsToKeep : 5
+            numberOfBuildsToKeep : 5)
 
-        utils.triggers()
+        triggers()
 
         stages {
             stage('Checkout SCM') {
