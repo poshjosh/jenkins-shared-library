@@ -1,5 +1,13 @@
 #!/usr/bin/env groovy
-@Library('utils') _
+library(
+    identifier: 'utils@master',
+    retriever: modernSCM(
+        [
+            $class: 'GitSCMSource',
+            remote: 'https://github.com/poshjosh/jenkins-shared-library.git'
+        ]
+    )
+)
 /**
  * <p>https://github.com/poshjosh</p>
  * Usage:
