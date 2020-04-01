@@ -36,7 +36,7 @@ def call(Map config=[:]) {
             timeoutUnit : 'MINUTES',
             numberOfBuildsToKeep : 5
 
-        utils.triggers
+        utils.triggers()
 
         stages {
             stage('Checkout SCM') {
