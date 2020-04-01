@@ -117,7 +117,7 @@ def call(Map config=[:]) {
                             script {
                                 MAVEN_WORKSPACE = WORKSPACE
                             }
-                            sh 'mvn ${MAVEN_ARGS} clean package'
+                            sh "mvn ${MAVEN_ARGS} clean package"
                             jacoco execPattern: 'target/jacoco.exec'
                         }
                         post {
@@ -132,27 +132,15 @@ def call(Map config=[:]) {
                     }
                     stage('Quality Assurance') {
                         parallel {
-                            stage('Integration Tests') {
-                                steps {
-                                    echo '- - - - - - - INTEGRATION TESTS - - - - - - -'
-                                    sh 'mvn ${MAVEN_ARGS} failsafe:integration-test failsafe:verify'
-                                    jacoco execPattern: 'target/jacoco-it.exec'
-                                }
-                                post {
-                                    always {
-                                        junit(
-                                            allowEmptyResults: true,
-                                            testResults: 'target/failsafe-reports/*.xml'
-                                        )
-                                    }
-                                }
-                            }
+
+                            integrationTests("${MAVEN_ARGS}")
+
                             stage('Sanity Check') {
                                 steps {
                                     echo '- - - - - - - SANITY CHECK - - - - - - -'
                                     // On error, fail the stage, but continue pipeline as success
                                     catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
-                                        sh 'mvn ${MAVEN_ARGS} checkstyle:checkstyle pmd:pmd pmd:cpd com.github.spotbugs:spotbugs-maven-plugin:spotbugs'
+                                        sh "mvn ${MAVEN_ARGS} checkstyle:checkstyle pmd:pmd pmd:cpd com.github.spotbugs:spotbugs-maven-plugin:spotbugs"
                                     }
                                 }
                             }
@@ -175,7 +163,7 @@ def call(Map config=[:]) {
                             stage('Documentation') {
                                 steps {
                                     echo '- - - - - - - DOCUMENTATION - - - - - - -'
-                                    sh 'mvn ${MAVEN_ARGS} site:site'
+                                    sh "mvn ${MAVEN_ARGS} site:site"
                                 }
                                 post {
                                     always {
@@ -188,7 +176,7 @@ def call(Map config=[:]) {
                     stage('Install Local') {
                         steps {
                             echo '- - - - - - - INSTALL LOCAL - - - - - - -'
-                            sh 'mvn ${MAVEN_ARGS} source:jar install:install'
+                            sh "mvn ${MAVEN_ARGS} source:jar install:install"
                         }
                     }
                 }
@@ -291,6 +279,24 @@ def call(Map config=[:]) {
 
                     utils.sendFailureEmail "${FAILURE_EMAIL_RECIPIENT}"
                 }
+            }
+        }
+    }
+}
+
+def integrationTests(String mavenArgs = '') {
+    stage('Integration Tests') {
+        steps {
+            echo '- - - - - - - INTEGRATION TESTS - - - - - - -'
+            sh "mvn ${mavenArgs} failsafe:integration-test failsafe:verify"
+            jacoco execPattern: 'target/jacoco-it.exec'
+        }
+        post {
+            always {
+                junit(
+                    allowEmptyResults: true,
+                    testResults: 'target/failsafe-reports/*.xml'
+                )
             }
         }
     }
