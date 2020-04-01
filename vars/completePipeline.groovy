@@ -72,7 +72,13 @@ def call(Map config=[:]) {
                 steps {
                     echo "Git URL: ${config.gitUrl}"
                     script {
-                          checkout([$class: 'GitSCM', branches: [[name: '**']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: "${config.gitUrl}"]]])
+                          checkout([$class: 'GitSCM',
+                              branches: [[name: '**']],
+                              doGenerateSubmoduleConfigurations: false,
+                              extensions: [],
+                              submoduleCfg: [],
+                              userRemoteConfigs: [[url: "${config.gitUrl}"]]
+                          ])
                     }
                 }
             }
