@@ -39,7 +39,7 @@ def call(Map config=[:]) {
                     description: 'Java environment variables')
             string(name: 'CMD_LINE_ARGS', defaultValue: '',
                     description: 'Command line arguments')
-            string(name: 'MAIN_CLASS', defaultValue: 'com.bc.util.Main',
+            string(name: 'MAIN_CLASS', defaultValue: '',
                     description: 'Java main class')
             string(name: 'SONAR_BASE_URL', defaultValue: '',
                     description: '<base_url>:<port> = sonar.host.url')
