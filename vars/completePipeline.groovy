@@ -1,4 +1,5 @@
 #!/usr/bin/env groovy
+@Library(['checkoutGit', 'cleanupDocker', 'cleanupWorkspace', 'options', 'sendFailureEmail', 'triggers']) _
 /**
  * <p>https://github.com/poshjosh</p>
  * Usage:
@@ -55,35 +56,25 @@ def call(Map config=[:]) {
             SONAR_URL = "${(params.SONAR_BASE_URL && params.SONAR_PORT) ? (params.SONAR_BASE_URL + ':' + params.SONAR_PORT) : ''}"
             VOLUME_BINDINGS = '-v /home/.m2:/root/.m2'
         }
-        options {
-            timestamps()
-            timeout(time: "${params.TIMEOUT}", unit: 'MINUTES')
-            buildDiscarder(logRotator(numToKeepStr: '4'))
-            skipStagesAfterUnstable()
-            disableConcurrentBuilds()
-        }
-        triggers {
-            // @TODO use webhooks from GitHub
-            // Once in every 2 hours slot between 0900 and 1600 every Monday - Friday
-            pollSCM('H H(8-16)/2 * * 1-5')
-        }
+
+        options(timeout : "${params.TIMEOUT}",
+            timeoutUnit : 'MINUTES',
+            numberOfBuildsToKeep : 5)
+
+        triggers()
+
         stages {
             stage('Checkout SCM') {
                 steps {
                     script {
-                          if(DEBUG == 'Y') {
-                              echo '- - - - - - - Printing Environment - - - - - - -'
-                              sh 'printenv'
-                              echo '- - - - - - - Done Printing Environment - - - - - - -'
-                          }
-                          echo "Git URL: ${config.gitUrl}"
-                          checkout([$class: 'GitSCM',
-                              branches: [[name: '**']],
-                              doGenerateSubmoduleConfigurations: false,
-                              extensions: [],
-                              submoduleCfg: [],
-                              userRemoteConfigs: [[url: "${config.gitUrl}"]]
-                          ])
+
+                        if(DEBUG == 'Y') {
+                            echo '- - - - - - - Printing Environment - - - - - - -'
+                            sh 'printenv'
+                            echo '- - - - - - - Done Printing Environment - - - - - - -'
+                        }
+
+                        checkoutGit("${config.gitUrl}")
                     }
                 }
             }
@@ -263,39 +254,16 @@ def call(Map config=[:]) {
         post {
             always {
                 script{
-                    retry(3) {
-                        try {
-                            timeout(time: 60, unit: 'SECONDS') {
-                                deleteDir() // Clean up workspace
-                            }
-                        } catch (org.jenkinsci.plugins.workflow.steps.FlowInterruptedException e) {
-                            // we re-throw as a different error, that would not
-                            // cause retry() to fail (workaround for issue JENKINS-51454)
-                            error 'Timeout!'
-                        }
-                    } // retry ends
-                    retry(3) {
-                        try {
-                            timeout(time: 60, unit: 'SECONDS') {
-                                sh "docker system prune -f --volumes"
-                            }
-                        } catch (org.jenkinsci.plugins.workflow.steps.FlowInterruptedException e) {
-                            // we re-throw as a different error, that would not
-                            // cause retry() to fail (workaround for issue JENKINS-51454)
-                            error 'Timeout!'
-                        }
-                    } // retry ends
+
+                    cleanupWorkspace(attempts : 3, timeout : 60, timeoutUnit : 'SECONDS')
+
+                    cleanupDocker(attempts : 3, timeout : 60, timeoutUnit : 'SECONDS')
                 }
             }
             failure {
                 script{
-                    if(FAILURE_EMAIL_RECIPIENT != null && FAILURE_EMAIL_RECIPIENT != '') {
-                        mail(
-                            to: "${FAILURE_EMAIL_RECIPIENT}",
-                            subject: "$IMAGE_NAME - Build # $BUILD_NUMBER - FAILED!",
-                            body: "$IMAGE_NAME - Build # $BUILD_NUMBER - FAILED:\n\nCheck console output at ${env.BUILD_URL} to view the results."
-                        )
-                    }
+
+                    sendFailureEmail(failureEmailRecipient : "${FAILURE_EMAIL_RECIPIENT}")
                 }
             }
         }
