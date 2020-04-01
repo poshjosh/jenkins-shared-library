@@ -12,7 +12,10 @@ library(
  * <p>https://github.com/poshjosh</p>
  * Usage:
  * <code>
- *     completePipeline(gitUrl : 'link_to_your_git_repo_here')
+ *     completePipeline(gitUrl : 'link_to_your_git_repo_here',
+ *         mainClass : 'com.abc.Main',
+ *         appPort : '9010',
+ *         sonarBaseUrl : '112.111.90.21')
  * </code>
  */
 def call(Map config=[:]) {
@@ -30,7 +33,7 @@ def call(Map config=[:]) {
             string(name: 'MAVEN_ARGS', defaultValue: '-B',
                     description: 'Maven arguments')
             string(name: 'APP_BASE_URL', defaultValue: 'http://localhost',
-                    description: 'Server protocol://host, without the port')
+                    description: 'Server  protocol://host, without the port')
             string(name: 'APP_PORT', defaultValue: "${appPort}", description: "'App server port'")
             string(name: 'APP_CONTEXT', defaultValue: '/',
                     description: 'App server context path. Must begin with a forward slash / ')
