@@ -48,9 +48,7 @@ def call(Map config=[:]) {
             disableConcurrentBuilds()
         }
 
-        triggers {
-            defaultPollSCM()
-        }
+        defaultPollSCM()
 
         stages {
             stage('Checkout SCM') {
