@@ -112,9 +112,9 @@ def call(Map config=[:]) {
 
                 script{
 
-                    defaultRetry { deleteDir() }
+                    utils.defaultRetry { deleteDir() }
 
-                    defaultRetry { sh "docker system prune -f --volumes" }
+                    utils.defaultRetry { sh "docker system prune -f --volumes" }
                 }
             }
             failure {
