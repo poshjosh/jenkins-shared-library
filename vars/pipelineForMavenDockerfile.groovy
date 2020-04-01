@@ -111,9 +111,9 @@ def call(Map config=[:]) {
             always {
                 script{
 
-                    utils.cleanupWorkspace attempts : 3, timeout : 60, timeoutUnit : 'SECONDS'
+                    utils.cleanupWorkspace(attempts : 3, timeout : 60, timeoutUnit : 'SECONDS')
 
-                    utils.cleanupDocker attempts : 3, timeout : 60, timeoutUnit : 'SECONDS'
+                    utils.cleanupDocker(attempts : 3, timeout : 60, timeoutUnit : 'SECONDS')
                 }
             }
             failure {
