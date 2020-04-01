@@ -112,9 +112,9 @@ def call(Map config=[:]) {
 
                 script{
 
-//                    utils.cleanupWorkspace(attempts : 3, timeout : 60, timeoutUnit : 'SECONDS')
+                    cleanupWorkspace(attempts : 3, timeout : 60, timeoutUnit : 'SECONDS')
 
-                    utils.cleanupDocker(attempts : 3, timeout : 60, timeoutUnit : 'SECONDS')
+                    cleanupDocker(attempts : 3, timeout : 60, timeoutUnit : 'SECONDS')
                 }
             }
             failure {
@@ -125,4 +125,52 @@ def call(Map config=[:]) {
             }
         }
     }
+}
+
+/**
+ * Usage:
+ * <code>
+ *     cleanupWorkspace(attempts : 3, timeout : 60, timeoutUnit : 'SECONDS')
+ * </code>
+ * <p>OR</p>
+ * <code>
+ *     cleanupWorkspace()
+ * </code>
+ */
+def cleanupWorkspace(int attempts = 3, int timeout = 30, String timeoutUnit = 'SECONDS') {
+    retry("${attempts}") {
+        try {
+            timeout(time: "${timeout}", unit: "${timeoutUnit}") {
+                deleteDir() // Clean up workspace
+            }
+        } catch (org.jenkinsci.plugins.workflow.steps.FlowInterruptedException e) {
+            // we re-throw as a different error, that would not
+            // cause retry() to fail (workaround for issue JENKINS-51454)
+            error 'Timeout!'
+        }
+    } // retry ends
+}
+
+/**
+ * Usage:
+ * <code>
+ *     cleanupDocker(attempts : 3, timeout : 60, timeoutUnit : 'SECONDS')
+ * </code>
+ * <p>OR</p>
+ * <code>
+ *     cleanupDocker()
+ * </code>
+ */
+def cleanupDocker(int attempts = 3, int timeout = 30, String timeoutUnit = 'SECONDS') {
+    retry("${attempts}") {
+        try {
+            timeout(time: "${timeout}", unit: "${timeoutUnit}") {
+                sh "docker system prune -f --volumes"
+            }
+        } catch (org.jenkinsci.plugins.workflow.steps.FlowInterruptedException e) {
+            // we re-throw as a different error, that would not
+            // cause retry() to fail (workaround for issue JENKINS-51454)
+            error 'Timeout!'
+        }
+    } // retry ends
 }
