@@ -255,7 +255,7 @@ def call(Map config=[:]) {
                                     .withRun("${RUN_ARGS}", "${CMD_LINE}") {
                                         // SERVER_URL is an environment variable not a pipeline parameter
                                         if(env.SERVER_URL) {
-                                            sh "curl --retry 5 --retry-connrefused --connect-timeout 5 --max-time 5 ${SERVER_URL}"
+                                            sh "curl --retry 3 --retry-connrefused --connect-timeout 15 --max-time 60 ${SERVER_URL}"
                                         }else {
                                             echo "No Server URL"
                                         }
