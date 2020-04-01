@@ -48,10 +48,10 @@ def call(Map config=[:]) {
             disableConcurrentBuilds()
         }
 
-        triggers{}
+        triggers {
             defaultPollSCM()
         }
-        
+
         stages {
             stage('Checkout SCM') {
                 steps {
