@@ -32,7 +32,7 @@ def call(Map config=[:]) {
                     description: 'Command line arguments')
             string(name: 'MAIN_CLASS', defaultValue: 'com.bc.util.Main',
                     description: 'Java main class')
-            string(name: 'SONAR_BASE_URL', defaultValue: 'http://localhost',
+            string(name: 'SONAR_BASE_URL', defaultValue: '',
                     description: '<base_url>:<port> = sonar.host.url')
             string(name: 'SONAR_PORT', defaultValue: '9000',
                     description: 'Port for Sonarqube server')
@@ -63,15 +63,20 @@ def call(Map config=[:]) {
             disableConcurrentBuilds()
         }
         triggers {
-    // @TODO use webhooks from GitHub
-    // Once in every 2 hours slot between 0900 and 1600 every Monday - Friday
+            // @TODO use webhooks from GitHub
+            // Once in every 2 hours slot between 0900 and 1600 every Monday - Friday
             pollSCM('H H(8-16)/2 * * 1-5')
         }
         stages {
             stage('Checkout SCM') {
                 steps {
-                    echo "Git URL: ${config.gitUrl}"
                     script {
+                          if(DEBUG == 'Y') {
+                              echo '- - - - - - - Printing Environment - - - - - - -'
+                              sh 'printenv'
+                              echo '- - - - - - - Done Printing Environment - - - - - - -'
+                          }
+                          echo "Git URL: ${config.gitUrl}"
                           checkout([$class: 'GitSCM',
                               branches: [[name: '**']],
                               doGenerateSubmoduleConfigurations: false,
@@ -80,6 +85,8 @@ def call(Map config=[:]) {
                               userRemoteConfigs: [[url: "${config.gitUrl}"]]
                           ])
                     }
+                    echo 'Printing host ip'
+                    sh "$(ip -4 addr show docker0 | grep -Po 'inet \K[\d.]+')"
                 }
             }
             stage('Maven') {
@@ -95,11 +102,6 @@ def call(Map config=[:]) {
                             echo '- - - - - - - TEST & PACKAGE - - - - - - -'
                             script {
                                 MAVEN_WORKSPACE = WORKSPACE
-                                if(DEBUG == 'Y') {
-                                    echo '- - - - - - - Printing Environment - - - - - - -'
-                                    sh 'printenv'
-                                    echo '- - - - - - - Done Printing Environment - - - - - - -'
-                                }
                             }
                             sh 'mvn ${MAVEN_ARGS} clean package'
                             jacoco execPattern: 'target/jacoco.exec'
@@ -242,7 +244,7 @@ def call(Map config=[:]) {
                     }
                     stage('Deploy Image') {
                         when {
-    //                        branch 'master' // Only works for multibranch pipeline
+//                            branch 'master' // Only works for multibranch pipeline
                             expression {
                                 return env.GIT_BRANCH == "origin/master"
                             }
