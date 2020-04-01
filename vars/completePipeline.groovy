@@ -274,8 +274,18 @@ def call(Map config=[:]) {
                             error 'Timeout!'
                         }
                     } // retry ends
+                    retry(3) {
+                        try {
+                            timeout(time: 60, unit: 'SECONDS') {
+                                sh "docker system prune -f --volumes"
+                            }
+                        } catch (org.jenkinsci.plugins.workflow.steps.FlowInterruptedException e) {
+                            // we re-throw as a different error, that would not
+                            // cause retry() to fail (workaround for issue JENKINS-51454)
+                            error 'Timeout!'
+                        }
+                    } // retry ends
                 }
-                sh "docker system prune -f --volumes"
             }
             failure {
                 script{
