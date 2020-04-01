@@ -132,9 +132,21 @@ def call(Map config=[:]) {
                     }
                     stage('Quality Assurance') {
                         stages {
-
-                            integrationTests("${MAVEN_ARGS}")
-
+                            stage('Integration Tests') {
+                                steps {
+                                    echo '- - - - - - - INTEGRATION TESTS - - - - - - -'
+                                    sh "mvn ${mavenArgs} failsafe:integration-test failsafe:verify"
+                                    jacoco execPattern: 'target/jacoco-it.exec'
+                                }
+                                post {
+                                    always {
+                                        junit(
+                                            allowEmptyResults: true,
+                                            testResults: 'target/failsafe-reports/*.xml'
+                                        )
+                                    }
+                                }
+                            }
                             stage('Sanity Check') {
                                 steps {
                                     echo '- - - - - - - SANITY CHECK - - - - - - -'
@@ -279,24 +291,6 @@ def call(Map config=[:]) {
 
                     utils.sendFailureEmail "${FAILURE_EMAIL_RECIPIENT}"
                 }
-            }
-        }
-    }
-}
-
-def integrationTests(String mavenArgs = '') {
-    stage('Integration Tests') {
-        steps {
-            echo '- - - - - - - INTEGRATION TESTS - - - - - - -'
-            sh "mvn ${mavenArgs} failsafe:integration-test failsafe:verify"
-            jacoco execPattern: 'target/jacoco-it.exec'
-        }
-        post {
-            always {
-                junit(
-                    allowEmptyResults: true,
-                    testResults: 'target/failsafe-reports/*.xml'
-                )
             }
         }
     }
