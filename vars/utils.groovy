@@ -43,10 +43,6 @@ def sendFailureEmail(String failureEmailRecipient) {
  *     }
  *     defaultRetry(this&doIt)
  * </code>
- * <p>OR</p>
- * <code>
- *     defaultRetry()
- * </code>
  */
 def defaultRetry(Closure body) {
     retry(3) {
