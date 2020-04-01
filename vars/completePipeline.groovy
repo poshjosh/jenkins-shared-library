@@ -268,11 +268,12 @@ def call(Map config=[:]) {
         }
         post {
             always {
+
                 script{
 
-                    utils.cleanupWorkspace attempts : 3, timeout : 60, timeoutUnit : 'SECONDS'
+                    utils.defaultRetry { deleteDir() }
 
-                    utils.cleanupDocker attempts : 3, timeout : 60, timeoutUnit : 'SECONDS'
+                    utils.defaultRetry { sh "docker system prune -f --volumes" }
                 }
             }
             failure {
