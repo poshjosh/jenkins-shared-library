@@ -90,6 +90,8 @@ def sendFailureEmail(String failureEmailRecipient) {
  * </code>
  */
 def defaultPollSCM() {
-    // Once in every 2 hours slot between 0900 and 1600 every Monday - Friday
-    pollSCM('H H(8-16)/2 * * 1-5')
+    triggers{
+        // Once in every 2 hours slot between 0900 and 1600 every Monday - Friday
+        pollSCM('H H(8-16)/2 * * 1-5')
+    }
 }
