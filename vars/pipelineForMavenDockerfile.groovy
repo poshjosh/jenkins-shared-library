@@ -55,6 +55,11 @@ def call(Map config=[:]) {
 
         stages {
             stage('Checkout SCM') {
+                when {
+                    expression {
+                        return (config.girUrl != null && config.girUrl != '')
+                    }
+                }
                 steps {
                     script {
 
