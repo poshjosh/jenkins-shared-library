@@ -42,7 +42,7 @@ def call(Map config=[:]) {
 
         options {
             timestamps()
-            timeout(time: "${params.timeout}", unit: 'MINUTES')
+            timeout(time: "${params.TIMEOUT}", unit: 'MINUTES')
             buildDiscarder(logRotator(numToKeepStr: '5'))
             skipStagesAfterUnstable()
             disableConcurrentBuilds()
