@@ -79,18 +79,18 @@ def call(Map config=[:]) {
                 steps {
                     echo " = = = = = = = BUILDING IMAGE = = = = = = = "
                     script {
-                    
+
                         if(DEBUG == 'Y') {
                             echo '- - - - - - - Printing Environment - - - - - - -'
                             sh 'printenv'
                             echo '- - - - - - - Done Printing Environment - - - - - - -'
                         }
 
-                        def additionalBuildArgs = "--pull"
-                        if (env.BRANCH_NAME == "master") {
-                            additionalBuildArgs = "--no-cache ${additionalBuildArgs}"
+                        def buildArgs = "--pull"
+                        if (env.GIT_BRANCH == "origin/master") {
+                            buildArgs = "--no-cache ${buildArgs}"
                         }
-                        docker.build("${IMAGE_NAME}", "${additionalBuildArgs} .")
+                        docker.build("${IMAGE_NAME}", "${buildArgs} .")
                     }
                 }
             }
