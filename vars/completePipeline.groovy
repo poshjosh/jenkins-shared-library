@@ -226,9 +226,10 @@ def call(Map config=[:]) {
                                 sh "cd target && mkdir dependency && cd dependency && find ${WORKSPACE}/target -type f -name '*.jar' -exec jar -xf {} ';'"
 
                                 def customArgs = '--build-arg MAIN_CLASS=' + params.MAIN_CLASS
-                                customArgs = customArgs + ' --build-arg JAVA_OPTS="' + params.JAVA_OPTS
                                 if(params.APP_PORT) {
-                                    customArgs = customArgs + ' -Dserver.port=' + params.APP_PORT + '"'
+                                    customArgs = customArgs + ' --build-arg JAVA_OPTS="' + params.JAVA_OPTS + ' -Dserver.port=' + params.APP_PORT + '"'
+                                }else{
+                                    customArgs = customArgs + ' --build-arg JAVA_OPTS="' + params.JAVA_OPTS + '"'
                                 }
                                 def additionalBuildArgs = "--pull ${customArgs}"
 
@@ -250,7 +251,6 @@ def call(Map config=[:]) {
                                 }
 
                                 echo "RUN_ARGS = ${RUN_ARGS}"
-                                echo "CMD_LINE = ${CMD_LINE}"
                                 echo "env.GIT_BRANCH = ${env.GIT_BRANCH}"
 
                                 docker.image("${IMAGE_NAME}")
