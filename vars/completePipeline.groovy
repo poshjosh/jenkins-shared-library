@@ -217,25 +217,28 @@ def call(Map config=[:]) {
                         steps {
                             echo '- - - - - - - BUILD IMAGE - - - - - - -'
                             script {
-                                // a dir target should exist if we have packaged our app e.g via mvn package or mvn jar:jar'
+
+                                // a dir target should exist if we have packaged our app via mvn package or mvn jar:jar'
 
                                 echo "Copying workspace containing maven artifact: ${MAVEN_WORKSPACE}/target"
-                                sh "cp -r ${MAVEN_WORKSPACE}/target target"
+                                sh "cp -r ${MAVEN_WORKSPACE}/target target && cd target"
 
                                 echo "Copying dependencies"
-                                sh "cd target && mkdir dependency && cd dependency && find ${WORKSPACE}/target -type f -name '*.jar' -exec jar -xf {} ';'"
+                                sh "mkdir dependency && cd dependency && find ${WORKSPACE}/target -type f -name '*.jar' -exec jar -xf {} ';'"
 
-                                def customArgs = '--build-arg MAIN_CLASS=' + params.MAIN_CLASS
+                                def buildArgs = '-- pull --build-arg MAIN_CLASS=' + params.MAIN_CLASS
                                 if(params.APP_PORT) {
                                     def javaOpts = params.JAVA_OPTS + ' -Dserver.port=' + params.APP_PORT
-//                                    customArgs = customArgs + ' --build-arg JAVA_OPTS="' + javaOpts + '"'
+                                    buildArgs = buildArgs + ' --build-arg JAVA_OPTS="' + javaOpts + '"'
                                 }else{
-                                    customArgs = customArgs + ' --build-arg JAVA_OPTS="' + params.JAVA_OPTS + '"'
+                                    buildArgs = buildArgs + ' --build-arg JAVA_OPTS="' + params.JAVA_OPTS + '"'
                                 }
-                                def additionalBuildArgs = "--pull ${customArgs}"
+                                if(params.DEBUG) {
+                                    buildArgs = buildArgs + ' --build-arg DEBUG=true'
+                                }
 
-                                echo "Building image: ${IMAGE_NAME}"
-                                docker.build("${IMAGE_NAME}", "${additionalBuildArgs} .")
+                                echo "Building image: ${IMAGE_NAME} with build arguments: ${buildArgs}"
+                                docker.build("${IMAGE_NAME}", "${buildArgs} .")
                             }
                         }
                     }
@@ -257,9 +260,11 @@ def call(Map config=[:]) {
                                 docker.image("${IMAGE_NAME}")
                                     .withRun("${RUN_ARGS}", "${params.CMD_LINE_ARGS}") {
 
-//                                        sh "docker attach ${CONTAINER_NAME}"
                                         sleep 10
-                                        sh "docker logs ${CONTAINER_NAME}"
+
+                                        if(params.DEBUG == 'Y') {
+                                            sh "docker logs ${CONTAINER_NAME}"
+                                        }
 
                                         // SERVER_URL is an environment variable not a pipeline parameter
                                         if(env.SERVER_URL) {
