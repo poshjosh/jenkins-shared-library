@@ -15,7 +15,7 @@ library(
  *     completePipeline(
  *         appPort : '9010',                      // optional
  *         appEndpoint : '/actuator/health',      // optional
- *         javaOpts : '-Dserver.port=9010 -XX:TieredStopAtLevel=1 -XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap -noverify'
+ *         javaOpts : '-Dserver.port=9010 -XX:TieredStopAtLevel=1 -XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap -noverify',
  *         mainClass : 'com.abc.Main',            // optional
  *         gitUrl : 'link_to_your_git_repo_here') // Only if not specified in jenkins app
  * </code>
@@ -214,11 +214,14 @@ def call(Map config=[:]) {
 
                                 // a dir target should exist if we have packaged our app via mvn package or mvn jar:jar'
 
+                                // The way the shell commands are seperated is important
+                                // Each shell is separate, does not continue from previous
+                                //
                                 echo "Copying workspace containing maven artifact: ${MAVEN_WORKSPACE}/target"
-                                sh "cp -r ${MAVEN_WORKSPACE}/target target && cd target"
+                                sh "cp -r ${MAVEN_WORKSPACE}/target target"
 
                                 echo "Copying dependencies"
-                                sh "mkdir dependency && cd dependency && find ${WORKSPACE}/target -type f -name '*.jar' -exec jar -xf {} ';'"
+                                sh "cd target && mkdir dependency && cd dependency && find ${WORKSPACE}/target -type f -name '*.jar' -exec jar -xf {} ';'"
 
                                 def buildArgs
                                 if(env.GIT_BRANCH == 'origin/master') {
