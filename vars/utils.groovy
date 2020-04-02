@@ -67,8 +67,3 @@ def defaultRetry(Closure body) {
         }
     } // retry ends
 }
-
-def getHostIpForContainerId(String containerId) {
-    sh "docker inspect -f {{.Node.Ip}} ${containerId} > hostIp"
-    return readFile('hostIp').trim()
-}
