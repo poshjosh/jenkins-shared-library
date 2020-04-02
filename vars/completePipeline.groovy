@@ -262,11 +262,11 @@ def call(Map config=[:]) {
 
                                 docker.image("${IMAGE_NAME}")
                                     .withRun("${RUN_ARGS}", "${CMD_LINE}") {
-
+                                        sh "docker container logs ${CONTAINER_NAME}"
+                                        sleep 10
+                                        sh "docker container logs ${CONTAINER_NAME}"
                                         // SERVER_URL is an environment variable not a pipeline parameter
                                         if(env.SERVER_URL) {
-                                            sleep 10
-                                            sh "docker container logs ${CONTAINER_NAME}"
                                             sh "curl --retry 3 --retry-connrefused --connect-timeout 30 --max-time 60 ${SERVER_URL}"
                                         }else {
                                             echo "No Server URL"
