@@ -86,10 +86,16 @@ def call(Map config=[:]) {
                             echo '- - - - - - - Done Printing Environment - - - - - - -'
                         }
 
-                        def buildArgs = "--pull"
-                        if (env.GIT_BRANCH == "origin/master") {
-                            buildArgs = "--no-cache ${buildArgs}"
+                        def buildArgs
+                        if(env.GIT_BRANCH == 'origin/master') {
+                            buildArgs = '--pull --no-cache'
+                        }else{
+                            buildArgs = '--pull'
                         }
+                        if(params.DEBUG == 'Y') {
+                            buildArgs = buildArgs + ' --build-arg DEBUG=true'
+                        }
+
                         docker.build("${IMAGE_NAME}", "${buildArgs} .")
                     }
                 }
