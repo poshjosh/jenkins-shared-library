@@ -228,7 +228,7 @@ def call(Map config=[:]) {
                                 def customArgs = '--build-arg MAIN_CLASS=' + params.MAIN_CLASS
                                 if(params.APP_PORT) {
                                     def javaOpts = params.JAVA_OPTS + ' -Dserver.port=' + params.APP_PORT
-                                    customArgs = customArgs + ' --build-arg JAVA_OPTS="' + javaOpts + '"'
+//                                    customArgs = customArgs + ' --build-arg JAVA_OPTS="' + javaOpts + '"'
                                 }else{
                                     customArgs = customArgs + ' --build-arg JAVA_OPTS="' + params.JAVA_OPTS + '"'
                                 }
@@ -257,7 +257,7 @@ def call(Map config=[:]) {
                                 docker.image("${IMAGE_NAME}")
                                     .withRun("${RUN_ARGS}", "${params.CMD_LINE_ARGS}") {
 
-                                        sh "docker attach ${CONTAINER_NAME}"
+//                                        sh "docker attach ${CONTAINER_NAME}"
                                         sleep 10
                                         sh "docker logs ${CONTAINER_NAME}"
 
