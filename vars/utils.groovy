@@ -5,7 +5,6 @@ def defaultConfig = [
     orgName : 'poshjosh',
     mavenArgs : '-B',
     baseUrl : 'http://3.19.158.114',
-    javaOpts : '-XX:TieredStopAtLevel=1 -XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap -noverify',
     sonarPort : '9000',
     timeout : '30', // minutes
     failureEmailRecipient : 'posh.bc@gmail.com']
