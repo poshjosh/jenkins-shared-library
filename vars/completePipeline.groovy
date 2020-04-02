@@ -254,7 +254,7 @@ def call(Map config=[:]) {
                                 echo "env.GIT_BRANCH = ${env.GIT_BRANCH}"
 
                                 docker.image("${IMAGE_NAME}")
-                                    .withRun("${RUN_ARGS}", "${CMD_LINE}") {
+                                    .withRun("${RUN_ARGS}", "${params.CMD_LINE_ARGS}") {
 
                                         sleep 10
                                         sh "docker container logs ${CONTAINER_NAME}"
