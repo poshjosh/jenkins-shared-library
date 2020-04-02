@@ -251,7 +251,7 @@ def call(Map config=[:]) {
                                 // Add server port to command line args
                                 def CMD_LINE
                                 if(env.SERVER_URL) {
-                                    CMD_LINE = params.CMD_LINE_ARGS + ' --server-port=' + params.APP_PORT
+                                    CMD_LINE = params.CMD_LINE_ARGS + ' --server-port="' + params.APP_PORT + '"'
                                 }else{
                                     CMD_LINE = params.CMD_LINE_ARGS
                                 }
