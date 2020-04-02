@@ -92,9 +92,6 @@ def call(Map config=[:]) {
                         }else{
                             buildArgs = '--pull'
                         }
-                        if(params.DEBUG == 'Y') {
-                            buildArgs = buildArgs + ' --build-arg DEBUG=true'
-                        }
 
                         docker.build("${IMAGE_NAME}", "${buildArgs} .")
                     }
