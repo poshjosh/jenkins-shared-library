@@ -38,16 +38,16 @@ def call(Map config=[:]) {
             string(name: 'APP_BASE_URL',
                     defaultValue: "${config.appBaseUrl ? config.appBaseUrl : utils.defaultConfig.baseUrl}",
                     description: 'Server  protocol://host, without the port')
-            string(name: 'APP_PORT', defaultValue: "${config.appPort}",
+            string(name: 'APP_PORT', defaultValue: "${config.appPort ? config.appPort : ''}",
                     description: 'App server port')
-            string(name: 'APP_ENDPOINT', defaultValue: "${config.appEndpoint}",
+            string(name: 'APP_ENDPOINT', defaultValue: "${config.appEndpoint ? config.appEndpoint : ''}",
                     description: 'Must begin with a forward slash /. Endpoint to append to app host for HTTP requests.')
             string(name: 'JAVA_OPTS',
                     defaultValue: "${config.javaOpts ? config.javaOpts : utils.defaultConfig.javaOpts}",
                     description: 'Java environment variables')
-            string(name: 'CMD_LINE_ARGS', defaultValue: "${config.cmdLineArgs}",
+            string(name: 'CMD_LINE_ARGS', defaultValue: "${config.cmdLineArgs ? config.cmdLineArgs : ''}",
                     description: 'Command line arguments')
-            string(name: 'MAIN_CLASS', defaultValue: "${config.mainClass}",
+            string(name: 'MAIN_CLASS', defaultValue: "${config.mainClass ? config.mainClass : ''}",
                     description: 'Java main class')
             string(name: 'SONAR_BASE_URL',
                     defaultValue: "${config.sonarBaseUrl ? config.sonarBaseUrl : utils.defaultConfig.baseUrl}",
