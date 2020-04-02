@@ -69,7 +69,6 @@ def call(Map config=[:]) {
             IMAGE_REF = "${ORG_NAME}/${APP_ID}"
             IMAGE_NAME = IMAGE_REF.toLowerCase()
             MAVEN_WORKSPACE = ''
-            MAVEN_CONTAINER_NAME = "${ARTIFACTID}-container"
             MAVEN_ARGS = "${params.DEBUG == 'Y' ? '-X ' + params.MAVEN_ARGS : params.MAVEN_ARGS}"
             SERVER_URL = "${(params.APP_BASE_URL && params.APP_PORT) ? (params.APP_BASE_URL + ':' + params.APP_PORT + params.APP_ENDPOINT) : ''}"
             SONAR_URL = "${(params.SONAR_BASE_URL && params.SONAR_PORT) ? (params.SONAR_BASE_URL + ':' + params.SONAR_PORT) : ''}"
@@ -113,7 +112,7 @@ def call(Map config=[:]) {
                 agent {
                     docker {
                         image 'maven:3-alpine'
-                        args "--name ${MAVEN_CONTAINER_NAME} -u root ${VOLUME_BINDINGS}"
+                        args "--name maven-3-alpine -u root ${VOLUME_BINDINGS}"
                     }
                 }
                 stages {
@@ -121,7 +120,14 @@ def call(Map config=[:]) {
                         steps {
                             echo '- - - - - - - TEST & PACKAGE - - - - - - -'
                             script {
+
                                 MAVEN_WORKSPACE = WORKSPACE
+
+                                if(DEBUG == 'Y') {
+                                    echo '- - - - - - - Printing Environment - - - - - - -'
+                                    sh 'printenv'
+                                    echo '- - - - - - - Done Printing Environment - - - - - - -'
+                                }
                             }
                             sh "mvn ${MAVEN_ARGS} clean package"
                             jacoco execPattern: 'target/jacoco.exec'
@@ -232,7 +238,8 @@ def call(Map config=[:]) {
                             echo '- - - - - - - RUN IMAGE - - - - - - -'
                             script{
 
-                                def RUN_ARGS = VOLUME_BINDINGS
+                                def CONTAINER_NAME = ARTIFACTID
+                                def RUN_ARGS = ARTIFACTID + ' ' VOLUME_BINDINGS
                                 if(params.APP_PORT) {
                                     RUN_ARGS = "${RUN_ARGS} -p ${params.APP_PORT}:${params.APP_PORT}"
                                 }
@@ -251,11 +258,15 @@ def call(Map config=[:]) {
                                 echo "RUN_ARGS = ${RUN_ARGS}"
                                 echo "CMD_LINE = ${CMD_LINE}"
 
+                                def hostIp = utils.getHostIpForContainerId "${CONTAINER_NAME}"
+                                echo "Host ip = ${hostIp}"
+
                                 docker.image("${IMAGE_NAME}")
                                     .withRun("${RUN_ARGS}", "${CMD_LINE}") {
                                         // SERVER_URL is an environment variable not a pipeline parameter
                                         if(env.SERVER_URL) {
-                                            sh "curl --retry 3 --retry-connrefused --connect-timeout 15 --max-time 60 ${SERVER_URL}"
+                                            sleep 10
+                                            sh "curl --retry 3 --retry-connrefused --connect-timeout 30 --max-time 60 ${SERVER_URL}"
                                         }else {
                                             echo "No Server URL"
                                         }
