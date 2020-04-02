@@ -8,7 +8,7 @@ def defaultConfig = [
     javaOpts : '-XX:TieredStopAtLevel=1',
     sonarPort : '9000',
     timeout : '30', // minutes
-    failureEmailRecipient : 'posh.bc@gmail.com'] 
+    failureEmailRecipient : 'posh.bc@gmail.com']
 
 /**
  * Usage:
@@ -66,4 +66,9 @@ def defaultRetry(Closure body) {
             error 'Timeout!'
         }
     } // retry ends
+}
+
+def getHostIpForContainerId(String containerId) {
+    sh "docker inspect -f {{.Node.Ip}} ${containerId} > hostIp"
+    return readFile('hostIp').trim()
 }
