@@ -15,6 +15,7 @@ library(
  *     completePipeline(
  *         appPort : '9010',                      // optional
  *         appEndpoint : '/actuator/health',      // optional
+ *         javaOpts : '-Dserver.port=9010 -XX:TieredStopAtLevel=1 -XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap -noverify'
  *         mainClass : 'com.abc.Main',            // optional
  *         gitUrl : 'link_to_your_git_repo_here') // Only if not specified in jenkins app
  * </code>
@@ -43,7 +44,7 @@ def call(Map config=[:]) {
             string(name: 'APP_ENDPOINT', defaultValue: "${config.appEndpoint ? config.appEndpoint : ''}",
                     description: 'Must begin with a forward slash /. Endpoint to append to app host for HTTP requests.')
             string(name: 'JAVA_OPTS',
-                    defaultValue: "${config.javaOpts ? config.javaOpts : utils.defaultConfig.javaOpts}",
+                    defaultValue: "${config.javaOpts ? config.javaOpts : ''}",
                     description: 'Java environment variables')
             string(name: 'CMD_LINE_ARGS', defaultValue: "${config.cmdLineArgs ? config.cmdLineArgs : ''}",
                     description: 'Command line arguments')
@@ -97,13 +98,6 @@ def call(Map config=[:]) {
                 }
                 steps {
                     script {
-
-                        if(DEBUG == 'Y') {
-                            echo '- - - - - - - Printing Environment - - - - - - -'
-                            sh 'printenv'
-                            echo '- - - - - - - Done Printing Environment - - - - - - -'
-                        }
-
                         utils.checkoutGit "${config.gitUrl}"
                     }
                 }
@@ -226,18 +220,20 @@ def call(Map config=[:]) {
                                 echo "Copying dependencies"
                                 sh "mkdir dependency && cd dependency && find ${WORKSPACE}/target -type f -name '*.jar' -exec jar -xf {} ';'"
 
-                                def buildArgs = '-- pull --build-arg MAIN_CLASS=' + params.MAIN_CLASS
-                                if(params.APP_PORT) {
-                                    def javaOpts = params.JAVA_OPTS + ' -Dserver.port=' + params.APP_PORT
-                                    buildArgs = buildArgs + ' --build-arg JAVA_OPTS="' + javaOpts + '"'
+                                def buildArgs
+                                if(env.GIT_BRANCH == 'origin/master') {
+                                    buildArgs = '--pull --no-cache'
                                 }else{
-                                    buildArgs = buildArgs + ' --build-arg JAVA_OPTS="' + params.JAVA_OPTS + '"'
+                                    buildArgs = '--pull'
                                 }
-                                if(params.DEBUG) {
+                                buildArgs = buildArgs + ' --build-arg MAIN_CLASS=' + params.MAIN_CLASS
+                                buildArgs = buildArgs + " --build-arg JAVA_OPTS='" + params.JAVA_OPTS + "'"
+                                if(params.DEBUG == 'Y') {
                                     buildArgs = buildArgs + ' --build-arg DEBUG=true'
                                 }
 
                                 echo "Building image: ${IMAGE_NAME} with build arguments: ${buildArgs}"
+
                                 docker.build("${IMAGE_NAME}", "${buildArgs} .")
                             }
                         }
