@@ -230,7 +230,7 @@ def call(Map config=[:]) {
 //                                    customArgs = customArgs + ' --build-arg JAVA_OPTS="-Dserver.port=8092"'
                                     def javaOpts = params.JAVA_OPTS + ' -Dserver.port=' + params.APP_PORT
                                     def hmm = customArgs + ' --build-arg JAVA_OPTS="' + javaOpts + '"'
-                                    echo "JAVA_OPTS = ${javaOpts}"
+                                    echo "JAVA_OPTS = ${hmm}"
                                 }else{
                                     customArgs = customArgs + ' --build-arg JAVA_OPTS="' + params.JAVA_OPTS + '"'
                                 }
