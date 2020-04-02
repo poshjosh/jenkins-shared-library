@@ -257,8 +257,9 @@ def call(Map config=[:]) {
                                 docker.image("${IMAGE_NAME}")
                                     .withRun("${RUN_ARGS}", "${params.CMD_LINE_ARGS}") {
 
+                                        sh "docker attach ${CONTAINER_NAME}"
                                         sleep 10
-                                        sh "docker container logs ${CONTAINER_NAME}"
+                                        sh "docker logs ${CONTAINER_NAME}"
 
                                         // SERVER_URL is an environment variable not a pipeline parameter
                                         if(env.SERVER_URL) {
