@@ -238,7 +238,8 @@ def call(Map config=[:]) {
                             echo '- - - - - - - RUN IMAGE - - - - - - -'
                             script{
 
-                                def CONTAINER_NAME = ARTIFACTID + '-' + VERSION
+                                def c = ARTIFACTID + '-' + VERSION
+                                def CONTAINER_NAME = c.toLowerCase()
                                 def RUN_ARGS = '--name ' + CONTAINER_NAME + ' ' + VOLUME_BINDINGS
                                 if(params.APP_PORT) {
                                     RUN_ARGS = "${RUN_ARGS} -p ${params.APP_PORT}:${params.APP_PORT}"
@@ -257,12 +258,10 @@ def call(Map config=[:]) {
 
                                 echo "RUN_ARGS = ${RUN_ARGS}"
                                 echo "CMD_LINE = ${CMD_LINE}"
+                                echo "env.GIT_BRANCH = ${env.GIT_BRANCH}"
 
                                 docker.image("${IMAGE_NAME}")
-                                    .withRun("${RUN_ARGS}", "${CMD_LINE}") { c ->
-
-                                        def hostIp = utils.getHostIpForContainerId "${c.id}"
-                                        echo "Host ip = ${hostIp}"
+                                    .withRun("${RUN_ARGS}", "${CMD_LINE}") {
 
                                         // SERVER_URL is an environment variable not a pipeline parameter
                                         if(env.SERVER_URL) {
