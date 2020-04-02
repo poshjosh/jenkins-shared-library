@@ -225,7 +225,7 @@ def call(Map config=[:]) {
                                 echo "Copying dependencies"
                                 sh "cd target && mkdir dependency && cd dependency && find ${WORKSPACE}/target -type f -name '*.jar' -exec jar -xf {} ';'"
 
-                                def customArgs = "--build-arg MAIN_CLASS=${params.MAIN_CLASS} --build-arg JAVA_OPTS=${params.JAVA_OPTS}"
+                                def customArgs = '--build-arg MAIN_CLASS=' + params.MAIN_CLASS + ' --build-arg JAVA_OPTS="' + params.JAVA_OPTS + '"'
                                 def additionalBuildArgs = "--pull ${customArgs}"
 
                                 echo "Building image: ${IMAGE_NAME}"
@@ -245,7 +245,7 @@ def call(Map config=[:]) {
                                     RUN_ARGS = "${RUN_ARGS} -p ${params.APP_PORT}:${params.APP_PORT}"
                                 }
                                 if(params.JAVA_OPTS) {
-                                    RUN_ARGS = RUN_ARGS + '-e JAVA_OPTS=' + JAVA_OPTS + ' -Dserver.port=' + params.APP_PORT
+                                    RUN_ARGS = RUN_ARGS + ' -e JAVA_OPTS="' + JAVA_OPTS + ' -Dserver.port=' + params.APP_PORT + '"'
                                 }
 
                                 // Add server port to command line args
