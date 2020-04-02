@@ -71,13 +71,6 @@ def call(Map config=[:]) {
                 }
                 steps {
                     script {
-
-                          if(DEBUG == 'Y') {
-                              echo '- - - - - - - Printing Environment - - - - - - -'
-                              sh 'printenv'
-                              echo '- - - - - - - Done Printing Environment - - - - - - -'
-                          }
-
                           utils.checkoutGit "${config.gitUrl}"
                     }
                 }
@@ -86,6 +79,13 @@ def call(Map config=[:]) {
                 steps {
                     echo " = = = = = = = BUILDING IMAGE = = = = = = = "
                     script {
+                    
+                        if(DEBUG == 'Y') {
+                            echo '- - - - - - - Printing Environment - - - - - - -'
+                            sh 'printenv'
+                            echo '- - - - - - - Done Printing Environment - - - - - - -'
+                        }
+
                         def additionalBuildArgs = "--pull"
                         if (env.BRANCH_NAME == "master") {
                             additionalBuildArgs = "--no-cache ${additionalBuildArgs}"
