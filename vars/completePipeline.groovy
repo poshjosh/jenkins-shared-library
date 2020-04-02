@@ -225,7 +225,11 @@ def call(Map config=[:]) {
                                 echo "Copying dependencies"
                                 sh "cd target && mkdir dependency && cd dependency && find ${WORKSPACE}/target -type f -name '*.jar' -exec jar -xf {} ';'"
 
-                                def customArgs = '--build-arg MAIN_CLASS=' + params.MAIN_CLASS + ' --build-arg JAVA_OPTS="' + params.JAVA_OPTS + '"'
+                                def customArgs = '--build-arg MAIN_CLASS=' + params.MAIN_CLASS
+                                customArgs = customArgs + ' --build-arg JAVA_OPTS="' + params.JAVA_OPTS
+                                if(params.APP_PORT) {
+                                    customArgs = customArgs + ' -Dserver.port=' + params.APP_PORT + '"'
+                                }
                                 def additionalBuildArgs = "--pull ${customArgs}"
 
                                 echo "Building image: ${IMAGE_NAME}"
@@ -244,17 +248,6 @@ def call(Map config=[:]) {
                                 if(params.APP_PORT) {
                                     RUN_ARGS = "${RUN_ARGS} -p ${params.APP_PORT}:${params.APP_PORT}"
                                 }
-                                if(params.JAVA_OPTS) {
-                                    RUN_ARGS = RUN_ARGS + ' -e JAVA_OPTS="' + JAVA_OPTS + ' -Dserver.port=' + params.APP_PORT + '"'
-                                }
-
-                                // Add server port to command line args
-                                def CMD_LINE
-                                if(env.SERVER_URL) {
-                                    CMD_LINE = params.CMD_LINE_ARGS  // + ' --server-port="' + params.APP_PORT + '"'
-                                }else{
-                                    CMD_LINE = params.CMD_LINE_ARGS
-                                }
 
                                 echo "RUN_ARGS = ${RUN_ARGS}"
                                 echo "CMD_LINE = ${CMD_LINE}"
@@ -262,9 +255,10 @@ def call(Map config=[:]) {
 
                                 docker.image("${IMAGE_NAME}")
                                     .withRun("${RUN_ARGS}", "${CMD_LINE}") {
-                                        sh "docker container logs ${CONTAINER_NAME}"
+
                                         sleep 10
                                         sh "docker container logs ${CONTAINER_NAME}"
+
                                         // SERVER_URL is an environment variable not a pipeline parameter
                                         if(env.SERVER_URL) {
                                             sh "curl --retry 3 --retry-connrefused --connect-timeout 30 --max-time 60 ${SERVER_URL}"
