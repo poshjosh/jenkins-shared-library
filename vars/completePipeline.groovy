@@ -238,7 +238,7 @@ def call(Map config=[:]) {
                             echo '- - - - - - - RUN IMAGE - - - - - - -'
                             script{
 
-                                def CONTAINER_NAME = ARTIFACTID + '-' VERSION
+                                def CONTAINER_NAME = ARTIFACTID + '-' + VERSION
                                 def RUN_ARGS = '--name ' + CONTAINER_NAME + ' ' + VOLUME_BINDINGS
                                 if(params.APP_PORT) {
                                     RUN_ARGS = "${RUN_ARGS} -p ${params.APP_PORT}:${params.APP_PORT}"
