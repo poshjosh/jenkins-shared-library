@@ -239,7 +239,7 @@ def call(Map config=[:]) {
                             script{
 
                                 def CONTAINER_NAME = ARTIFACTID
-                                def RUN_ARGS = ARTIFACTID + ' ' VOLUME_BINDINGS
+                                def RUN_ARGS = ARTIFACTID + ' ' + VOLUME_BINDINGS
                                 if(params.APP_PORT) {
                                     RUN_ARGS = "${RUN_ARGS} -p ${params.APP_PORT}:${params.APP_PORT}"
                                 }
@@ -258,11 +258,12 @@ def call(Map config=[:]) {
                                 echo "RUN_ARGS = ${RUN_ARGS}"
                                 echo "CMD_LINE = ${CMD_LINE}"
 
-                                def hostIp = utils.getHostIpForContainerId "${CONTAINER_NAME}"
-                                echo "Host ip = ${hostIp}"
-
                                 docker.image("${IMAGE_NAME}")
-                                    .withRun("${RUN_ARGS}", "${CMD_LINE}") {
+                                    .withRun("${RUN_ARGS}", "${CMD_LINE}") { c ->
+
+                                        def hostIp = utils.getHostIpForContainerId "${c.id}"
+                                        echo "Host ip = ${hostIp}"
+
                                         // SERVER_URL is an environment variable not a pipeline parameter
                                         if(env.SERVER_URL) {
                                             sleep 10
