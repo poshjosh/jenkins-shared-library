@@ -245,13 +245,13 @@ def call(Map config=[:]) {
                                     RUN_ARGS = "${RUN_ARGS} -p ${params.APP_PORT}:${params.APP_PORT}"
                                 }
                                 if(params.JAVA_OPTS) {
-                                    RUN_ARGS = "${RUN_ARGS} -e JAVA_OPTS=${JAVA_OPTS} -Dserver.port=${params.APP_PORT}"
+                                    RUN_ARGS = RUN_ARGS + '-e JAVA_OPTS=' + JAVA_OPTS + ' -Dserver.port=' + params.APP_PORT
                                 }
 
                                 // Add server port to command line args
                                 def CMD_LINE
                                 if(env.SERVER_URL) {
-                                    CMD_LINE = params.CMD_LINE_ARGS// + ' --server-port="' + params.APP_PORT + '"'
+                                    CMD_LINE = params.CMD_LINE_ARGS  // + ' --server-port="' + params.APP_PORT + '"'
                                 }else{
                                     CMD_LINE = params.CMD_LINE_ARGS
                                 }
