@@ -27,19 +27,19 @@ def call(Map config=[:]) {
 
         parameters {
             string(name: 'ORG_NAME',
-                    defaultValue: "${config.orgName ? config.orgName : utils.defaultConfig.orgName}",
+                    defaultValue: "${config.orgName ?: utils.defaultConfig.orgName}",
                     description: 'Name of the organization. (Docker Hub/GitHub)')
             string(name: 'MAVEN_ARGS',
-                    defaultValue: "${config.mavenArgs ? config.mavenArgs : utils.defaultConfig.mavenArgs}",
+                    defaultValue: "${config.mavenArgs ?: utils.defaultConfig.mavenArgs}",
                     description: 'Maven arguments')
             string(name: 'TIMEOUT',
-                    defaultValue: "${config.timeout ? config.timeout : utils.defaultConfig.timeout}",
+                    defaultValue: "${config.timeout ?: utils.defaultConfig.timeout}",
                     description: 'Max time that could be spent in MINUTES')
             string(name: 'BUILD_CONTEXT',
-                    defaultValue: "${config.buildContext ? config.buildContext : utils.defaultConfig.buildContext}",
+                    defaultValue: "${config.buildContext ?: utils.defaultConfig.buildContext}",
                     description: 'Docker build context')
             string(name: 'FAILURE_EMAIL_RECIPIENT',
-                    defaultValue: "${config.failureEmailRecipient ? config.failureEmailRecipient : utils.defaultConfig.failureEmailRecipient}",
+                    defaultValue: "${config.failureEmailRecipient ?: utils.defaultConfig.failureEmailRecipient}",
                     description: 'The email address to send a message to on failure')
             choice(name: 'DEBUG', choices: ['N', 'Y'], description: 'Debug?')
         }
