@@ -7,6 +7,7 @@ def defaultConfig = [
     baseUrl : 'http://3.19.158.114',
     sonarPort : '9000',
     timeout : '30', // minutes
+    buildContext : '.',
     failureEmailRecipient : 'posh.bc@gmail.com']
 
 /**
