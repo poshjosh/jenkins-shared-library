@@ -30,36 +30,38 @@ def call(Map config=[:]) {
 
         parameters {
             string(name: 'ORG_NAME',
-                    defaultValue: "${config.orgName ? config.orgName : utils.defaultConfig.orgName}",
+                    defaultValue: "${config.orgName ?: utils.defaultConfig.orgName}",
                     description: 'Name of the organization. (Docker Hub/GitHub)')
             string(name: 'MAVEN_ARGS',
-                    defaultValue: "${config.mavenArgs ? config.mavenArgs : utils.defaultConfig.mavenArgs}",
+                    defaultValue: "${config.mavenArgs ?: utils.defaultConfig.mavenArgs}",
                     description: 'Maven arguments')
             string(name: 'APP_BASE_URL',
-                    defaultValue: "${config.appBaseUrl ? config.appBaseUrl : utils.defaultConfig.baseUrl}",
+                    defaultValue: "${config.appBaseUrl ?: utils.defaultConfig.baseUrl}",
                     description: 'Server  protocol://host, without the port')
             string(name: 'APP_PORT', defaultValue: "${config.appPort ? config.appPort : ''}",
                     description: 'App server port')
-            string(name: 'APP_ENDPOINT', defaultValue: "${config.appEndpoint ? config.appEndpoint : ''}",
+            string(name: 'APP_ENDPOINT',
+                    defaultValue: "${config.appEndpoint ?: ''}",
                     description: 'Must begin with a forward slash /. Endpoint to append to app host for HTTP requests.')
             string(name: 'JAVA_OPTS',
-                    defaultValue: "${config.javaOpts ? config.javaOpts : ''}",
+                    defaultValue: "${config.javaOpts ?: ''}",
                     description: 'Java environment variables')
-            string(name: 'CMD_LINE_ARGS', defaultValue: "${config.cmdLineArgs ? config.cmdLineArgs : ''}",
+            string(name: 'CMD_LINE_ARGS',
+                    defaultValue: "${config.cmdLineArgs ?: ''}",
                     description: 'Command line arguments')
             string(name: 'SONAR_BASE_URL',
-                    defaultValue: "${config.sonarBaseUrl ? config.sonarBaseUrl : utils.defaultConfig.baseUrl}",
+                    defaultValue: "${config.sonarBaseUrl ?: utils.defaultConfig.baseUrl}",
                     description: '<base_url>:<port> = sonar.host.url')
             string(name: 'SONAR_PORT',
-                    defaultValue: "${config.sonarPort ? config.sonarPort : utils.defaultConfig.sonarPort}",
+                    defaultValue: "${config.sonarPort ?: utils.defaultConfig.sonarPort}",
                     description: 'Port for Sonarqube server')
-            string(name: 'TIMEOUT', defaultValue: "${config.timeout ? config.timeout : utils.defaultConfig.timeout}",
+            string(name: 'TIMEOUT', defaultValue: "${config.timeout ?: utils.defaultConfig.timeout}",
                     description: 'Max time that could be spent in MINUTES')
             string(name: 'BUILD_CONTEXT',
-                    defaultValue: "${config.buildContext ? config.buildContext : utils.defaultConfig.buildContext}",
+                    defaultValue: "${config.buildContext ?: utils.defaultConfig.buildContext}",
                     description: 'Docker build context')
             string(name: 'FAILURE_EMAIL_RECIPIENT',
-                    defaultValue: "${config.failureEmailRecipient ? config.failureEmailRecipient : utils.defaultConfig.failureEmailRecipient}",
+                    defaultValue: "${config.failureEmailRecipient ?: utils.defaultConfig.failureEmailRecipient}",
                     description: 'The email address to send a message to on failure')
             choice(name: 'DEBUG', choices: ['N', 'Y'], description: 'Debug?')
         }
