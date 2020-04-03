@@ -9,8 +9,6 @@ library(
     )
 )
 
-def dockerFilename = 'Dockerfile_maven3alpine'
-
 /**
  * <p>https://github.com/poshjosh</p>
  * Usage:
@@ -88,7 +86,7 @@ def call(Map config=[:]) {
 
                         if(!dockerFileExists) {
                             utils.copyResourceToWorkspace(
-                                srcFilename : dockerFilename,
+                                srcFilename : 'Dockerfile_maven3alpine',
                                 destFilename : 'Dockerfile')
                         }
 

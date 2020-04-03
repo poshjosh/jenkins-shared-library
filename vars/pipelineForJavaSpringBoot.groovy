@@ -9,8 +9,6 @@ library(
     )
 )
 
-def dockerFilename = 'Dockerfile_openjdk8alpine_forSpringBoot'
-
 /**
  * <p>https://github.com/poshjosh</p>
  * Usage:
@@ -109,7 +107,7 @@ def call(Map config=[:]) {
 
                         if(!dockerFileExists) {
                             utils.copyResourceToWorkspace(
-                                srcFilename : dockerFilename,
+                                srcFilename : 'Dockerfile_openjdk8alpine_forSpringBoot',
                                 destFilename : 'Dockerfile')
                         }
 
@@ -132,14 +130,7 @@ def call(Map config=[:]) {
                         steps {
                             echo '- - - - - - - TEST & PACKAGE - - - - - - -'
                             script {
-
                                 MAVEN_WORKSPACE = WORKSPACE
-
-                                if(DEBUG == 'Y') {
-                                    echo '- - - - - - - Printing Environment - - - - - - -'
-                                    sh 'printenv'
-                                    echo '- - - - - - - Done Printing Environment - - - - - - -'
-                                }
                             }
                             sh "mvn ${MAVEN_ARGS} clean package"
                             jacoco execPattern: 'target/jacoco.exec'
