@@ -82,8 +82,9 @@ def call(Map config=[:]) {
                             echo '- - - - - - - Done Printing Environment - - - - - - -'
                         }
 
-                        def dockerFileExists = sh(script : 'test -f ./Dockerfile', returnStatus : true)
+                        def dockerFileExists = sh(script : 'test -f /Dockerfile', returnStatus : true)
 
+                        echo "Docker file exists = ${dockerFileExists}"
                         if( ! dockerFileExists) {
                             utils.copyResourceToWorkspace(
                                 srcFilename : "${dockerfile}", destFilename : 'Dockerfile')
