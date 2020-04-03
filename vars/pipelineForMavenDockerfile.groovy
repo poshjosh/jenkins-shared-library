@@ -101,6 +101,10 @@ def call(Map config=[:]) {
                         echo "Building image: ${IMAGE_NAME} with build arguments: ${buildArgs}"
                         echo "env.GIT_BRANCH = ${env.GIT_BRANCH}"
 
+                        sh 'cat Dockerfile'
+                        utils.copyResourceToWorkspace 'Dockerfile'
+                        sh 'cat Dockerfile'
+
                         docker.build("${IMAGE_NAME}", "${buildArgs} ${params.BUILD_CONTEXT}")
                     }
                 }
