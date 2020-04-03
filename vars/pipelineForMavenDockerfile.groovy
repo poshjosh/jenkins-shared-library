@@ -11,7 +11,8 @@ library(
 /**
  * <p>https://github.com/poshjosh</p>
  * Usage:
- * <code>
+ * <code
+ *     // Specify gitUrl, only if not specified in jenkins app
  *     pipelineForMavenDockerfile(gitUrl : 'link_to_your_git_repo_here')
  * </code>
  * <p>OR</p>
