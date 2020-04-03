@@ -67,3 +67,10 @@ def defaultRetry(Closure body) {
         }
     } // retry ends
 }
+
+def copyResourceToWorkspace(String fname) {
+    def dest = "${WORKSPACE}" + File.separator + fname
+    writeFile file : dest, text : libraryResource(fname)
+    echo "Copied ${fname} from resources/ to ${pwd}"
+    return dest
+}
