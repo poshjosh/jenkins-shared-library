@@ -245,7 +245,7 @@ def call(Map config=[:]) {
 
                                 def c = ARTIFACTID + '-' + VERSION
                                 def CONTAINER_NAME = c.toLowerCase()
-                                def RUN_ARGS = '--name ' + CONTAINER_NAME + ' ' + VOLUME_BINDINGS
+                                def RUN_ARGS = '--name ' + CONTAINER_NAME + ' -u poshjosh ' + VOLUME_BINDINGS
                                 if(params.APP_PORT) {
                                     RUN_ARGS = "${RUN_ARGS} -p ${params.APP_PORT}:${params.APP_PORT}"
                                 }
