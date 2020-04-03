@@ -8,6 +8,9 @@ library(
         ]
     )
 )
+
+def dockerfile = 'Dockerfile_maven3alpine'
+
 /**
  * <p>https://github.com/poshjosh</p>
  * Usage:
@@ -79,10 +82,11 @@ def call(Map config=[:]) {
                             echo '- - - - - - - Done Printing Environment - - - - - - -'
                         }
 
-                        def dockerFileExists = sh(script : 'test -f Dockerfile', returnStatus : true)
+                        def dockerFileExists = sh(script : 'test -f ./Dockerfile', returnStatus : true)
+
                         if( ! dockerFileExists) {
                             utils.copyResourceToWorkspace(
-                                srcFilename : 'Dockerfile_maven3alpine', destFilename : 'Dockerfile')
+                                srcFilename : "${dockerfile}", destFilename : 'Dockerfile')
                         }
 
                         if(config.gitUrl) {
