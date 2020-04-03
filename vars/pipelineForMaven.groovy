@@ -88,7 +88,8 @@ def call(Map config=[:]) {
 
                         if(!dockerFileExists) {
                             utils.copyResourceToWorkspace(
-                                srcFilename : dockerFilename, destFilename : 'Dockerfile')
+                                srcFilename : dockerFilename,
+                                destFilename : 'Dockerfile')
                         }
 
                         if(config.gitUrl) {
