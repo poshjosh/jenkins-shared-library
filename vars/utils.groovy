@@ -71,6 +71,6 @@ def defaultRetry(Closure body) {
 def copyResourceToWorkspace(String fname) {
     def dest = "${WORKSPACE}/${fname}"
     writeFile file : dest, text : libraryResource(fname)
-    echo "Copied ${fname} from resources/ to ${pwd}"
+    echo "Copied ${fname} from resources/ to ${WORSPACE}/"
     return dest
 }
