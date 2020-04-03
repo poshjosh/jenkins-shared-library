@@ -212,7 +212,7 @@ def call(Map config=[:]) {
                                 sh "cd target && mkdir dependency && cd dependency && find ${WORKSPACE}/target -type f -name '*.jar' -exec jar -xf {} ';'"
 
                                 def buildArgs
-                                if(env.GIT_BRANCH == 'origin/master') {
+                                if(env.GIT_BRANCH == 'master') {
                                     buildArgs = '--pull --no-cache'
                                 }else{
                                     buildArgs = '--pull'
@@ -276,7 +276,7 @@ def call(Map config=[:]) {
                         when {
 //                            branch 'master' // Only works for multibranch pipeline
                             expression {
-                                return env.GIT_BRANCH == "origin/master"
+                                return env.GIT_BRANCH == "master"
                             }
                         }
                         steps {
