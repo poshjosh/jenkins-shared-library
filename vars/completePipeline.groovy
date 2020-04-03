@@ -15,9 +15,8 @@ library(
  *     completePipeline(
  *         appPort : '9010',                      // optional
  *         appEndpoint : '/actuator/health',      // optional
- *         javaOpts : '-Dserver.port=9010 -XX:TieredStopAtLevel=1 -XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap -noverify',
- *         mainClass : 'com.abc.Main',            // optional
- *         gitUrl : 'link_to_your_git_repo_here') // Only if not specified in jenkins app
+ *         gitUrl : 'link_to_your_git_repo_here'  // Only if not specified in jenkins app
+ *    )
  * </code>
  */
 def call(Map config=[:]) {
