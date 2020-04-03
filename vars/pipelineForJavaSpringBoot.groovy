@@ -8,6 +8,9 @@ library(
         ]
     )
 )
+
+def dockerFilename = 'Dockerfile_openjdk8alpine_forSpringBoot'
+
 /**
  * <p>https://github.com/poshjosh</p>
  * Usage:
@@ -52,6 +55,9 @@ def call(Map config=[:]) {
                     description: 'Port for Sonarqube server')
             string(name: 'TIMEOUT', defaultValue: "${config.timeout ? config.timeout : utils.defaultConfig.timeout}",
                     description: 'Max time that could be spent in MINUTES')
+            string(name: 'BUILD_CONTEXT',
+                    defaultValue: "${config.buildContext ? config.buildContext : utils.defaultConfig.buildContext}",
+                    description: 'Docker build context')
             string(name: 'FAILURE_EMAIL_RECIPIENT',
                     defaultValue: "${config.failureEmailRecipient ? config.failureEmailRecipient : utils.defaultConfig.failureEmailRecipient}",
                     description: 'The email address to send a message to on failure')
@@ -84,15 +90,31 @@ def call(Map config=[:]) {
         }
 
         stages {
-            stage('Checkout SCM') {
-                when {
-                    expression {
-                        return (config.gitUrl != null && config.gitUrl != '')
-                    }
-                }
+            stage('Prepare') {
                 steps {
+                    echo " = = = = = = = PREPARING = = = = = = = "
                     script {
-                        utils.checkoutGit "${config.gitUrl}"
+
+                        if(DEBUG == 'Y') {
+                            echo '- - - - - - - Printing Environment - - - - - - -'
+                            sh 'printenv'
+                            echo '- - - - - - - Done Printing Environment - - - - - - -'
+                        }
+
+                        def dockerFileExists = sh(script : 'test -f /Dockerfile', returnStatus : true) == 0
+
+                        echo "Docker file exists = ${dockerFileExists}"
+
+                        if(!dockerFileExists) {
+                            utils.copyResourceToWorkspace(
+                                srcFilename : dockerFilename,
+                                destFilename : 'Dockerfile')
+                        }
+
+                        if(config.gitUrl) {
+
+                            utils.checkoutGit "${config.gitUrl}"
+                        }
                     }
                 }
             }
@@ -240,7 +262,7 @@ def call(Map config=[:]) {
 
                                 echo "Building image: ${IMAGE_NAME} with build arguments: ${buildArgs}"
 
-                                docker.build("${IMAGE_NAME}", "${buildArgs} .")
+                                docker.build("${IMAGE_NAME}", "${buildArgs} ${params.BUILD_CONTEXT}")
                             }
                         }
                     }
