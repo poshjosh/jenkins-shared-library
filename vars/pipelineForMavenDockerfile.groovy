@@ -101,10 +101,11 @@ def call(Map config=[:]) {
                         echo "Building image: ${IMAGE_NAME} with build arguments: ${buildArgs}"
                         echo "env.GIT_BRANCH = ${env.GIT_BRANCH}"
 
-                        sh 'ls -a && cd .. && ls -a'
-                        sh 'cat Dockerfile'
-                        utils.copyResourceToWorkspace 'Dockerfile'
-                        sh 'cat Dockerfile'
+                        def dockerFileExists = sh(script : 'test -f Dockerfile', returnStatus : true)
+                        if( ! dockerFileExists) {
+                            utils.copyResourceToWorkspace(
+                                srcFilename : 'Dockerfile_maven3alpine', destFilename : 'Dockerfile')
+                        }
 
                         docker.build("${IMAGE_NAME}", "${buildArgs} ${params.BUILD_CONTEXT}")
                     }
