@@ -69,8 +69,7 @@ def defaultRetry(Closure body) {
 }
 
 def copyResourceToWorkspace(String fname) {
-//    def dest = "${WORKSPACE}" + java.io.File.separator + fname
-    java.io.File dest = java.nio.file.Paths.get("${WORKSPACE}", fname).toFile();
+    def dest = "${WORKSPACE}/${fname}"
     writeFile file : dest, text : libraryResource(fname)
     echo "Copied ${fname} from resources/ to ${pwd}"
     return dest
