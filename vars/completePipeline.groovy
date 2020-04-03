@@ -25,10 +25,6 @@ def call(Map config=[:]) {
 
         agent any
 
-        /**
-         * At a minimum, provide the MAIN_CLASS and where applicable APP_PORT
-         * You may also need to specify SONAR_BASE_URL if not <tt>localhost</tt>
-         */
         parameters {
             string(name: 'ORG_NAME',
                     defaultValue: "${config.orgName ? config.orgName : utils.defaultConfig.orgName}",
@@ -48,8 +44,6 @@ def call(Map config=[:]) {
                     description: 'Java environment variables')
             string(name: 'CMD_LINE_ARGS', defaultValue: "${config.cmdLineArgs ? config.cmdLineArgs : ''}",
                     description: 'Command line arguments')
-            string(name: 'MAIN_CLASS', defaultValue: "${config.mainClass ? config.mainClass : ''}",
-                    description: 'Java main class')
             string(name: 'SONAR_BASE_URL',
                     defaultValue: "${config.sonarBaseUrl ? config.sonarBaseUrl : utils.defaultConfig.baseUrl}",
                     description: '<base_url>:<port> = sonar.host.url')
@@ -201,11 +195,6 @@ def call(Map config=[:]) {
                 }
             }
             stage('Docker') {
-                when {
-                    expression {
-                        return (params.MAIN_CLASS != null && params.MAIN_CLASS != '')
-                    }
-                }
                 stages{
                     stage('Build Image') {
                         steps {
@@ -229,8 +218,13 @@ def call(Map config=[:]) {
                                 }else{
                                     buildArgs = '--pull'
                                 }
-                                buildArgs = buildArgs + ' --build-arg MAIN_CLASS=' + params.MAIN_CLASS
-                                buildArgs = buildArgs + " --build-arg JAVA_OPTS='" + params.JAVA_OPTS + "'"
+                                def javaOpts
+                                if(params.APP_PORT) {
+                                    javaOpts = params.JAVA_OPTS + ' -Dserver.port=' + params.APP_PORT
+                                }else{
+                                    javaOpts = params.JAVA_OPTS
+                                }
+                                buildArgs = buildArgs + " --build-arg JAVA_OPTS='" + javaOpts + "'"
                                 if(params.DEBUG == 'Y') {
                                     buildArgs = buildArgs + ' --build-arg DEBUG=true'
                                 }
