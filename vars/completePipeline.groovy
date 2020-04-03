@@ -219,7 +219,11 @@ def call(Map config=[:]) {
                                 }
                                 def javaOpts
                                 if(params.APP_PORT) {
-                                    javaOpts = params.JAVA_OPTS + ' -DSERVER_PORT=' + params.APP_PORT
+                                    if(params.JAVA_OPTS) {
+                                        javaOpts = params.JAVA_OPTS + ' -DSERVER_PORT=' + params.APP_PORT
+                                    }else{
+                                        javaOpts = '-DSERVER_PORT=' + params.APP_PORT
+                                    }
                                 }else{
                                     javaOpts = params.JAVA_OPTS
                                 }
