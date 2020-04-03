@@ -68,9 +68,19 @@ def defaultRetry(Closure body) {
     } // retry ends
 }
 
-def copyResourceToWorkspace(String fname) {
-    def dest = "${WORKSPACE}/${fname}"
-    writeFile file : dest, text : libraryResource(fname)
-    echo "Copied ${fname} from resources/ to ${WORSPACE}/"
+/**
+ * Usage:
+ * <code>
+ *     copyResourceToWorkspace(srcFilename : 'start.sh', destFilename : 'start.sh')
+ * </code>
+ * OR
+ * <code>
+ *     copyResourceToWorkspace(srcFilename : 'start.sh')
+ * </code>
+ */
+def copyResourceToWorkspace(Map config = [:]) {
+    def dest = "${WORKSPACE}/" + (config.destFilename ?: config.srcFilename)
+    writeFile file : dest, text : libraryResource("${config.srcFilename}")
+    echo "Copied resources/${config.srcFilename} to ${dest}"
     return dest
 }
