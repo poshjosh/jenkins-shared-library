@@ -68,21 +68,9 @@ def call(Map config=[:]) {
         }
 
         stages {
-            stage('Checkout SCM') {
-                when {
-                    expression {
-                        return (config.gitUrl != null && config.gitUrl != '')
-                    }
-                }
+            stage('Prepare') {
                 steps {
-                    script {
-                          utils.checkoutGit "${config.gitUrl}"
-                    }
-                }
-            }
-            stage('Build Image') {
-                steps {
-                    echo " = = = = = = = BUILDING IMAGE = = = = = = = "
+                    echo " = = = = = = = PREPARING WORKSPACE = = = = = = = "
                     script {
 
                         if(DEBUG == 'Y') {
@@ -90,6 +78,24 @@ def call(Map config=[:]) {
                             sh 'printenv'
                             echo '- - - - - - - Done Printing Environment - - - - - - -'
                         }
+
+                        def dockerFileExists = sh(script : 'test -f Dockerfile', returnStatus : true)
+                        if( ! dockerFileExists) {
+                            utils.copyResourceToWorkspace(
+                                srcFilename : 'Dockerfile_maven3alpine', destFilename : 'Dockerfile')
+                        }
+
+                        if(config.gitUrl) {
+                        
+                            utils.checkoutGit "${config.gitUrl}"
+                        }
+                    }
+                }
+            }
+            stage('Build Image') {
+                steps {
+                    echo " = = = = = = = BUILDING IMAGE = = = = = = = "
+                    script {
 
                         def buildArgs
                         if(env.GIT_BRANCH == 'master') {
@@ -100,12 +106,6 @@ def call(Map config=[:]) {
 
                         echo "Building image: ${IMAGE_NAME} with build arguments: ${buildArgs}"
                         echo "env.GIT_BRANCH = ${env.GIT_BRANCH}"
-
-                        def dockerFileExists = sh(script : 'test -f Dockerfile', returnStatus : true)
-                        if( ! dockerFileExists) {
-                            utils.copyResourceToWorkspace(
-                                srcFilename : 'Dockerfile_maven3alpine', destFilename : 'Dockerfile')
-                        }
 
                         docker.build("${IMAGE_NAME}", "${buildArgs} ${params.BUILD_CONTEXT}")
                     }
