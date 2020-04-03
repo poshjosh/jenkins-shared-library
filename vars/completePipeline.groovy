@@ -220,7 +220,7 @@ def call(Map config=[:]) {
                                 }
                                 def javaOpts
                                 if(params.APP_PORT) {
-                                    javaOpts = params.JAVA_OPTS + ' -Dserver.port=' + params.APP_PORT
+                                    javaOpts = params.JAVA_OPTS + ' -DSERVER_PORT=' + params.APP_PORT
                                 }else{
                                     javaOpts = params.JAVA_OPTS
                                 }
