@@ -70,7 +70,7 @@ def call(Map config=[:]) {
         stages {
             stage('Prepare') {
                 steps {
-                    echo " = = = = = = = PREPARING WORKSPACE = = = = = = = "
+                    echo " = = = = = = = PREPARING = = = = = = = "
                     script {
 
                         if(DEBUG == 'Y') {
@@ -86,7 +86,7 @@ def call(Map config=[:]) {
                         }
 
                         if(config.gitUrl) {
-                        
+
                             utils.checkoutGit "${config.gitUrl}"
                         }
                     }
