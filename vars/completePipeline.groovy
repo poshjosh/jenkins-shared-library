@@ -15,6 +15,7 @@ library(
  *     completePipeline(
  *         appPort : '9010',                      // optional
  *         appEndpoint : '/actuator/health',      // optional
+ *         mainClass : 'com.my.MainClass'         // No docker stage without this
  *         gitUrl : 'link_to_your_git_repo_here'  // Only if not specified in jenkins app
  *    )
  * </code>
