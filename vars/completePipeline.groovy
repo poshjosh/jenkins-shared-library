@@ -42,9 +42,6 @@ def call(Map config=[:]) {
             string(name: 'JAVA_OPTS',
                     defaultValue: "${config.javaOpts ? config.javaOpts : ''}",
                     description: 'Java environment variables')
-            string(name: 'MAIN_CLASS',
-                    defaultValue: "${config.mainClass ? config.mainClass : ''}",
-                    description: 'The java main class')
             string(name: 'CMD_LINE_ARGS', defaultValue: "${config.cmdLineArgs ? config.cmdLineArgs : ''}",
                     description: 'Command line arguments')
             string(name: 'SONAR_BASE_URL',
@@ -200,7 +197,7 @@ def call(Map config=[:]) {
             stage('Docker') {
                 when {
                     expression {
-                        return (params.MAIN_CLASS != null && params.MAIN_CLASS != '')
+                        return (config.mainClass != null && config.mainClass != '')
                     }
                 }
                 stages{
@@ -222,9 +219,9 @@ def call(Map config=[:]) {
 
                                 def buildArgs
                                 if(env.GIT_BRANCH == 'master') {
-                                    buildArgs = '--pull --no-cache --build-arg MAIN_CLASS=' + params.MAIN_CLASS
+                                    buildArgs = '--pull --no-cache --build-arg MAIN_CLASS=' + config.mainClass
                                 }else{
-                                    buildArgs = '--pull --build-arg MAIN_CLASS=' + params.MAIN_CLASS
+                                    buildArgs = '--pull --build-arg MAIN_CLASS=' + config.mainClass
                                 }
                                 def javaOpts
                                 if(params.APP_PORT) {
