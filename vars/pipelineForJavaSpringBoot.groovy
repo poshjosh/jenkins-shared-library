@@ -112,7 +112,7 @@ def call(Map config=[:]) {
                                 srcFilename : 'Dockerfile_openjdk8alpine_forSpringBoot',
                                 destFilename : 'Dockerfile')
                             utils.copyResourceToWorkspace(
-                                srcFilename : 'Dockerfile_openjdk8alpine_forSpringBoot_start.sh'
+                                srcFilename : 'Dockerfile_openjdk8alpine_forSpringBoot_start.sh',
                                 destFilename : 'start.sh')
                         }
 
