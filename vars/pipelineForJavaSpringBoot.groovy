@@ -103,7 +103,7 @@ def call(Map config=[:]) {
 
                         echo "env.GIT_BRANCH = ${env.GIT_BRANCH}"
 
-                        def dockerFileExists = sh(script : 'test -f /Dockerfile', returnStatus : true) == 0
+                        def dockerFileExists = sh(script : 'test -f ./Dockerfile', returnStatus : true) == 0
 
                         echo "Docker file exists = ${dockerFileExists}"
 
