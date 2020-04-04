@@ -80,6 +80,8 @@ def call(Map config=[:]) {
                             echo '- - - - - - - Done Printing Environment - - - - - - -'
                         }
 
+                        echo "env.GIT_BRANCH = ${env.GIT_BRANCH}"
+
                         def dockerFileExists = sh(script : 'test -f /Dockerfile', returnStatus : true) == 0
 
                         echo "Docker file exists = ${dockerFileExists}"
@@ -110,7 +112,6 @@ def call(Map config=[:]) {
                         }
 
                         echo "Building image: ${IMAGE_NAME} with build arguments: ${buildArgs}"
-                        echo "env.GIT_BRANCH = ${env.GIT_BRANCH}"
 
                         docker.build("${IMAGE_NAME}", "${buildArgs} ${params.BUILD_CONTEXT}")
                     }
@@ -130,7 +131,7 @@ def call(Map config=[:]) {
                 when {
 //                    branch 'master' // Only works for multibranch pipeline
                     expression {
-                        return env.GIT_BRANCH == "master"
+                        return (env.GIT_BRANCH == "master" || env.GIT_BRANCH == "origin/master")
                     }
                 }
                 steps {
