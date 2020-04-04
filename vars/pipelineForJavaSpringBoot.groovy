@@ -111,6 +111,7 @@ def call(Map config=[:]) {
                             utils.copyResourceToWorkspace(
                                 srcFilename : 'Dockerfile_openjdk8alpine_forSpringBoot',
                                 destFilename : 'Dockerfile')
+                            utils.copyResourceToWorkspace(srcFilename : 'start.sh')
                         }
 
                         if(config.gitUrl) {
