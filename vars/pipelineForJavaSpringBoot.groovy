@@ -13,7 +13,7 @@ library(
  * <p>https://github.com/poshjosh</p>
  * Usage:
  * <code>
- *     completePipeline(
+ *     pipelineForJavaSpringBoog(
  *         appPort : '9010',                      // optional
  *         appEndpoint : '/actuator/health',      // optional
  *         mainClass : 'com.my.MainClass'         // No docker stage without this
@@ -100,6 +100,8 @@ def call(Map config=[:]) {
                             sh 'printenv'
                             echo '- - - - - - - Done Printing Environment - - - - - - -'
                         }
+
+                        echo "env.GIT_BRANCH = ${env.GIT_BRANCH}"
 
                         def dockerFileExists = sh(script : 'test -f /Dockerfile', returnStatus : true) == 0
 
@@ -272,7 +274,6 @@ def call(Map config=[:]) {
                                 }
 
                                 echo "RUN_ARGS = ${RUN_ARGS}"
-                                echo "env.GIT_BRANCH = ${env.GIT_BRANCH}"
 
                                 docker.image("${IMAGE_NAME}")
                                     .withRun("${RUN_ARGS}", "${params.CMD_LINE_ARGS}") {
