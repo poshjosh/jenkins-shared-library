@@ -105,7 +105,7 @@ def call(Map config=[:]) {
                     script {
 
                         def buildArgs
-                        if(env.GIT_BRANCH == 'master') {
+                        if(env.GIT_BRANCH == "master" || env.GIT_BRANCH == "origin/master") {
                             buildArgs = '--pull --no-cache'
                         }else{
                             buildArgs = '--pull'
