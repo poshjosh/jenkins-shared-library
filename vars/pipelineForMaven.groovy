@@ -113,10 +113,6 @@ def call(Map config=[:]) {
 
                         echo "Building image: ${IMAGE_NAME} with build arguments: ${buildArgs}"
 
-                        def dockerFileExists = sh(script : 'test -f ./Dockerfile', returnStatus : true) == 0
-
-                        echo "2 Docker file exists = ${dockerFileExists}"
-
                         docker.build("${IMAGE_NAME}", "${buildArgs} ${params.BUILD_CONTEXT}")
                     }
                 }
