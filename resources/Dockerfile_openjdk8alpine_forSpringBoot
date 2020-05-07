@@ -23,4 +23,4 @@ ARG JAVA_OPTS
 ENV JAVA_OPTS=$JAVA_OPTS
 ARG MAIN_CLASS
 ENV MAIN_CLASS=$MAIN_CLASS
-ENTRYPOINT ["/start.sh"]
+ENTRYPOINT ["/Dockerfile_openjdk8alpine_forSpringBoot_start.sh"]
