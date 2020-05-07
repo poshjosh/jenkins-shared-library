@@ -1,5 +1,5 @@
 #!/bin/sh
-if [ "$DEBUG" = true ] ; then
+if [ "$DEBUG" = true ]; then
     echo 'ls -a' && ls -a
     echo 'cd app' && cd app
     echo 'ls -a' && ls -a
